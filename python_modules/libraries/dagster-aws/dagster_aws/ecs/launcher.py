@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Mapping, Optional
 import boto3
 from botocore.exceptions import ClientError
 
-from dagster import Array, Field, Noneable, Permissive, ScalarUnion, StringSource
+from dagster import Array, DagsterRun, Field, Noneable, Permissive, ScalarUnion, StringSource
 from dagster import _check as check
 from dagster._core.events import EngineEventData, MetadataEntry
 from dagster._core.launcher.base import (
@@ -432,12 +432,14 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
     def _get_container_name(self, container_context) -> str:
         return container_context.container_name or self.container_name
 
-    def _run_task_kwargs(self, run, image, container_context) -> Dict[str, Any]:
+    def _run_task_kwargs(self, run: DagsterRun, image, container_context) -> Dict[str, Any]:
         """
         Return a dictionary of args to launch the ECS task, registering a new task
         definition if needed.
         """
         environment = self._environment(container_context)
+        environment.append({"name": "DAGSTER_RUN_JOB_NAME", "value": run.job_name})
+
         secrets = self._secrets(container_context)
 
         if container_context.task_definition_arn:

@@ -2,6 +2,7 @@ import docker
 from dagster_docker.utils import DOCKER_CONFIG_SCHEMA, validate_docker_config, validate_docker_image
 
 import dagster._check as check
+from dagster import DagsterRun
 from dagster._core.launcher.base import (
     CheckRunHealthResult,
     LaunchRunContext,
@@ -90,9 +91,10 @@ class DockerRunLauncher(RunLauncher, ConfigurableClass):
         validate_docker_image(docker_image)
         return docker_image
 
-    def _launch_container_with_command(self, run, docker_image, command):
+    def _launch_container_with_command(self, run: DagsterRun, docker_image, command):
         container_context = self.get_container_context(run)
         docker_env = dict([parse_env_var(env_var) for env_var in container_context.env_vars])
+        docker_env["DAGSTER_RUN_JOB_NAME"] = run.job_name
 
         client = self._get_client(container_context)
 
