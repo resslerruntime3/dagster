@@ -170,3 +170,11 @@ def test_upstream_include_self(all_assets):
 
     selection = AssetSelection.groups("ladies").upstream(include_self=False)
     assert selection.resolve(all_assets) == _asset_keys_of({danny})
+
+
+def test_self_deps():
+    @asset
+    def a(a):
+        ...
+
+    assert False

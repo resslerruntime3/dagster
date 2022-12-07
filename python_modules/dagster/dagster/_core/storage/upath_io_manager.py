@@ -55,8 +55,7 @@ class UPathIOManager(MemoizableIOManager):
     @staticmethod
     def _has_multiple_partitions(context: Union[InputContext, OutputContext]) -> bool:
         assert context.has_asset_partitions, "this should only be used with partitioned assets"
-        key_range = context.asset_partition_key_range
-        return key_range.start != key_range.end
+        return len(context.asset_partition_keys) > 0
 
     def _get_path_without_extension(self, context: Union[InputContext, OutputContext]) -> UPath:
         if context.has_asset_key:
