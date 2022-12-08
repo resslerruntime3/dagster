@@ -69,6 +69,57 @@ filterwarnings = [
 ]
 
 # ########################
+# ##### PYRIGHT
+# ########################
+
+# [Docs root]
+#   https://github.com/microsoft/pyright/tree/main/docs
+# [Config option reference]
+#   https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+
+# Pyright does not have a docs site, but the documentation (a collection of
+# markdown files in the GH repo, linked above) is pretty thorough.
+
+[tool.pyright]
+
+include = [
+  ".buildkite/dagster-buildkite",
+  "python_modules/*",
+  "examples/*",
+  "integration_tests/*",
+  "scripts/*",
+]
+
+# Unfortunately pyright does not offer a way to extend the default exclusions, so we have to
+# reiterate them here if we want to add anything else.
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "**/.tox",
+  ".git",
+  "**/.venv*",
+  ".buildkite/**/.tox",
+  "python_modules/libraries/dagster-airflow",
+  "python_modules/libraries/dagster-gcp",
+  "python_modules/libraries/dagster-ge",
+]
+
+# Set to false to help us during the transition from mypy to pyright. Mypy does
+# not analyze unannotated functions by default, and so as of 2022-12 the
+# codebase contains a large number of type errors in unannotated functions.
+# Over time we will opt individual files into `analyzeUnannotatedFunctions` by
+# placing `# pyright: skipUnannotatedFunctions=true` at the top of individual
+# files. Eventually we can turn off this setting entirely.
+analyzeUnannotatedFunctions = true
+
+# Use "basic" ruleset. This differs from strict in several ways, but most
+# importantly it does not flag untyped code as an error.
+typeCheckingMode = "basic"
+
+# We use ruff for this.
+reportInvalidStringEscapeSequence = false
+
+# ########################
 # ##### RUFF
 # ########################
 
