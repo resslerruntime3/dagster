@@ -568,7 +568,13 @@
       },
       {
         "title": "Airflow",
-        "path": "/integrations/airflow"
+        "path": "/integrations/airflow",
+        "children": [
+          {
+            "title": "Reference",
+            "path": "/integrations/airflow/reference"
+          }
+        ]
       },
       {
         "title": "dbt",
