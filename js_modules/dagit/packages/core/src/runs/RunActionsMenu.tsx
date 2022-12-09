@@ -55,7 +55,11 @@ export const RunActionsMenu: React.FC<{
   >('none');
 
   const {rootServerURI} = React.useContext(AppContext);
-  const {canTerminatePipelineExecution, canDeletePipelineRun} = usePermissions();
+  const {
+    canTerminatePipelineExecution,
+    canDeletePipelineRun,
+    canLaunchPipelineReexecution,
+  } = usePermissions();
   const history = useHistory();
 
   const copyConfig = useCopyToClipboard();
@@ -124,14 +128,18 @@ export const RunActionsMenu: React.FC<{
                 />
               </Tooltip>
               <Tooltip
-                content="Re-execute is unavailable because the pipeline is not present in the current workspace."
+                content={
+                  !canLaunchPipelineReexecution.enabled
+                    ? canLaunchPipelineReexecution.disabledReason
+                    : 'Re-execute is unavailable because the pipeline is not present in the current workspace.'
+                }
                 position="bottom"
-                disabled={infoReady && !!repoMatch}
+                disabled={infoReady && !!repoMatch && canLaunchPipelineReexecution.enabled}
                 targetTagName="div"
               >
                 <MenuItem
                   text="Re-execute"
-                  disabled={!infoReady || !repoMatch}
+                  disabled={!infoReady || !repoMatch || !canLaunchPipelineReexecution.enabled}
                   icon="refresh"
                   onClick={async () => {
                     if (repoMatch && runConfigYaml) {
