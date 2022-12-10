@@ -21,7 +21,7 @@ from dagster._core.definitions.freshness_policy import FreshnessPolicy
 from dagster._core.errors import DagsterInvalidDefinitionError
 from dagster._core.storage.io_manager import IOManagerDefinition
 from dagster._core.types.dagster_type import DagsterType
-from dagster._seven import funcsigs
+from inspect import Parameter
 from dagster._utils.backcompat import (
     ExperimentalWarning,
     deprecation_warning,
@@ -517,9 +517,9 @@ def build_asset_ins(
     non_var_input_param_names = [
         param.name
         for param in input_params
-        if param.kind == funcsigs.Parameter.POSITIONAL_OR_KEYWORD
+        if param.kind == Parameter.POSITIONAL_OR_KEYWORD
     ]
-    has_kwargs = any(param.kind == funcsigs.Parameter.VAR_KEYWORD for param in input_params)
+    has_kwargs = any(param.kind == Parameter.VAR_KEYWORD for param in input_params)
 
     all_input_names = set(non_var_input_param_names) | asset_ins.keys()
 

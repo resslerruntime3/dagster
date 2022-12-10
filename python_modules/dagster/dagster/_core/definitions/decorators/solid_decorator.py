@@ -1,4 +1,5 @@
 from functools import lru_cache, update_wrapper
+from inspect import Parameter
 from typing import (
     AbstractSet,
     Any,
@@ -18,7 +19,6 @@ from dagster._config import UserConfigSchema
 from dagster._core.decorator_utils import format_docstring_for_description
 from dagster._core.errors import DagsterInvalidDefinitionError
 from dagster._core.types.dagster_type import DagsterTypeKind
-from dagster._seven import funcsigs
 
 from ...decorator_utils import (
     get_function_params,
@@ -43,7 +43,7 @@ class DecoratedOpFunction(NamedTuple):
         return is_context_provided(get_function_params(self.decorated_fn))
 
     @lru_cache(maxsize=1)
-    def _get_function_params(self) -> Sequence[funcsigs.Parameter]:
+    def _get_function_params(self) -> Sequence[Parameter]:
         return get_function_params(self.decorated_fn)
 
     def positional_inputs(self) -> Sequence[str]:
@@ -352,10 +352,10 @@ def resolve_checked_solid_fn_inputs(
     inputs_to_infer = set()
     has_kwargs = False
 
-    for param in cast(List[funcsigs.Parameter], input_args):
-        if param.kind == funcsigs.Parameter.VAR_KEYWORD:
+    for param in cast(List[Parameter], input_args):
+        if param.kind == Parameter.VAR_KEYWORD:
             has_kwargs = True
-        elif param.kind == funcsigs.Parameter.VAR_POSITIONAL:
+        elif param.kind == Parameter.VAR_POSITIONAL:
             raise DagsterInvalidDefinitionError(
                 f"{decorator_name} '{fn_name}' decorated function has positional vararg parameter "
                 f"'{param}'. {decorator_name} decorated functions should only have keyword "
@@ -422,7 +422,7 @@ def resolve_checked_solid_fn_inputs(
     return input_defs
 
 
-def is_context_provided(params: Sequence[funcsigs.Parameter]) -> bool:
+def is_context_provided(params: Sequence[Parameter]) -> bool:
     if len(params) == 0:
         return False
     return params[0].name in get_valid_name_permutations("context")
