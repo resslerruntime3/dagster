@@ -13,7 +13,7 @@ from typing import (
     overload,
 )
 
-from typing_extensions import TypeAlias, TypeGuard
+from typing_extensions import TypeAlias
 
 import dagster._check as check
 from dagster._annotations import public
@@ -25,6 +25,7 @@ from dagster._utils.backcompat import experimental_arg_warning
 
 from ..decorator_utils import (
     get_function_params,
+    is_context_provided,
     is_required_param,
     positional_arg_name_list,
     validate_expected_params,
@@ -55,10 +56,6 @@ ResourceFunction: TypeAlias = Union[
     ResourceFunctionWithContext,
     ResourceFunctionWithoutContext,
 ]
-
-
-def is_context_provided(fn: ResourceFunction) -> TypeGuard[ResourceFunctionWithContext]:
-    return len(get_function_params(fn)) >= 1
 
 
 class ResourceDefinition(AnonymousConfigurableDefinition, RequiresResources):
@@ -203,9 +200,9 @@ class ResourceDefinition(AnonymousConfigurableDefinition, RequiresResources):
     def __call__(self, *args, **kwargs):
         from dagster._core.execution.context.init import UnboundInitResourceContext
 
-        context_provided = is_context_provided(self.resource_fn)
+        # context_provided = is_context_provided(self.resource_fn)
 
-        if context_provided:
+        if is_context_provided(self.resource_fn):
             if len(args) + len(kwargs) == 0:
                 raise DagsterInvalidInvocationError(
                     "Resource initialization function has context argument, but no context was"
