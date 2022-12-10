@@ -1,12 +1,13 @@
 import datetime
-from typing import Iterator, Optional, Sequence, Union
+from typing import Callable, Iterator, Optional, Sequence, Union
 
 import pendulum
 import pytz
 from croniter import croniter
+from typing_extensions import Literal
 
 import dagster._check as check
-from dagster._seven.compat.pendulum import to_timezone
+from dagster._seven.compat.pendulum import PendulumDateTime, to_timezone
 
 
 def is_valid_cron_string(cron_string: str) -> bool:
@@ -27,7 +28,10 @@ def is_valid_cron_schedule(cron_schedule: Union[str, Sequence[str]]) -> bool:
 
 
 def cron_string_iterator(
-    start_timestamp: float, cron_string: str, execution_timezone: Optional[str], start_offset=0
+    start_timestamp: float,
+    cron_string: str,
+    execution_timezone: Optional[str],
+    start_offset: int = 0,
 ) -> Iterator[datetime.datetime]:
     """Generator of datetimes >= start_timestamp for the given cron string."""
     timezone_str = execution_timezone if execution_timezone else "UTC"
@@ -52,17 +56,18 @@ def cron_string_iterator(
 
     # Special-case common intervals (hourly/daily/weekly/monthly) since croniter iteration can be
     # much slower than adding a fixed interval
+    delta_fn: Optional[Callable[[PendulumDateTime, int], PendulumDateTime]] = None
     if all(is_numeric[0:3]) and all(is_wildcard[3:]):  # monthly
-        delta_fn = lambda d, num: d.add(months=num)
+        delta_fn = _make_delta_fn("add", "months")
         should_hour_change = False
     elif all(is_numeric[0:2]) and is_numeric[4] and all(is_wildcard[2:4]):  # weekly
-        delta_fn = lambda d, num: d.add(weeks=num)
+        delta_fn = _make_delta_fn("add", "weeks")
         should_hour_change = False
     elif all(is_numeric[0:2]) and all(is_wildcard[2:]):  # daily
-        delta_fn = lambda d, num: d.add(days=num)
+        delta_fn = _make_delta_fn("add", "days")
         should_hour_change = False
     elif is_numeric[0] and all(is_wildcard[1:]):  # hourly
-        delta_fn = lambda d, num: d.add(hours=num)
+        delta_fn = _make_delta_fn("add", "hours")
         should_hour_change = True
     else:
         delta_fn = None
@@ -116,7 +121,7 @@ def reverse_cron_string_iterator(
 
     # Go forward one iteration so that the next iteration is the first time that is < end_datetime
     # and matches the cron schedule
-    next_date = date_iter.get_next(datetime.datetime)
+    next_date = pendulum.instance(date_iter.get_next(datetime.datetime))
 
     cron_parts, _ = croniter.expand(cron_string)
 
@@ -126,16 +131,16 @@ def reverse_cron_string_iterator(
     # Special-case common intervals (hourly/daily/weekly/monthly) since croniter iteration can be
     # much slower than adding a fixed interval
     if all(is_numeric[0:3]) and all(is_wildcard[3:]):  # monthly
-        delta_fn = lambda d, num: d.subtract(months=num)
+        delta_fn = _make_delta_fn("subtract", "months")
         should_hour_change = False
     elif all(is_numeric[0:2]) and is_numeric[4] and all(is_wildcard[2:4]):  # weekly
-        delta_fn = lambda d, num: d.subtract(weeks=num)
+        delta_fn = _make_delta_fn("subtract", "weeks")
         should_hour_change = False
     elif all(is_numeric[0:2]) and all(is_wildcard[2:]):  # daily
-        delta_fn = lambda d, num: d.subtract(days=num)
+        delta_fn = _make_delta_fn("subtract", "days")
         should_hour_change = False
     elif is_numeric[0] and all(is_wildcard[1:]):  # hourly
-        delta_fn = lambda d, num: d.subtract(hours=num)
+        delta_fn = _make_delta_fn("subtract", "hours")
         should_hour_change = True
     else:
         delta_fn = None
@@ -174,6 +179,22 @@ def reverse_cron_string_iterator(
             )
 
             yield next_date
+
+
+def _make_delta_fn(
+    direction: Literal["add", "subtract"], period: str
+) -> Callable[[PendulumDateTime, int], PendulumDateTime]:
+    if direction == "add":
+
+        def delta_fn(d: PendulumDateTime, num: int) -> PendulumDateTime:
+            return d.add(**{period: num})
+
+    elif direction == "subtract":
+
+        def delta_fn(d: PendulumDateTime, num: int) -> PendulumDateTime:
+            return d.subtract(**{period: num})
+
+    return delta_fn
 
 
 def schedule_execution_time_iterator(

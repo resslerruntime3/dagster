@@ -263,8 +263,8 @@ def get_external_schedule_execution(
     repo_def: RepositoryDefinition,
     instance_ref: Optional[InstanceRef],
     schedule_name: str,
-    scheduled_execution_timestamp: float,
-    scheduled_execution_timezone: str,
+    scheduled_execution_timestamp: Optional[float],
+    scheduled_execution_timezone: Optional[str],
 ):
     schedule_def = repo_def.get_schedule_def(schedule_name)
     scheduled_execution_time = (
@@ -272,7 +272,7 @@ def get_external_schedule_execution(
             scheduled_execution_timestamp,
             tz=scheduled_execution_timezone,
         )
-        if scheduled_execution_timestamp
+        if scheduled_execution_timestamp and scheduled_execution_timezone
         else None
     )
 

@@ -2,9 +2,8 @@ import warnings
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Optional, Sequence, Union, cast
 
-import pendulum
-
 import dagster._check as check
+import dagster._seven.compat.pendulum as pendulum
 from dagster._annotations import PublicAttr
 from dagster._core.errors import (
     DagsterInvalidDefinitionError,
