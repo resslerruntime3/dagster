@@ -7,7 +7,7 @@ from json import (
 )
 
 try:
-    from json import JSONDecodeError
+    from json import JSONDecodeError as JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError  # type: ignore[misc, assignment]
 

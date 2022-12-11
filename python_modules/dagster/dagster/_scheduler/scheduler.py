@@ -667,7 +667,7 @@ def _get_existing_run_for_request(
     external_schedule: ExternalSchedule,
     schedule_time,
     run_request: RunRequest,
-):
+) -> Optional[DagsterRun]:
     tags = merge_dicts(
         DagsterRun.tags_for_schedule(external_schedule),
         {
@@ -705,7 +705,7 @@ def _create_scheduler_run(
     external_schedule: ExternalSchedule,
     external_pipeline: ExternalPipeline,
     run_request: RunRequest,
-):
+) -> DagsterRun:
     from dagster._daemon.daemon import get_telemetry_daemon_session_id
 
     run_config = run_request.run_config

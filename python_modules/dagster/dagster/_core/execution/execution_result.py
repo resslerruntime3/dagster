@@ -22,23 +22,26 @@ from dagster._core.storage.pipeline_run import DagsterRun
 
 class ExecutionResult(ABC):
     @property
+    @abstractmethod
     def job_def(self) -> JobDefinition:
-        raise NotImplementedError()
+        ...
 
     @property
+    @abstractmethod
     def dagster_run(self) -> DagsterRun:
-        raise NotImplementedError()
+        ...
 
     @property
+    @abstractmethod
     def all_events(self) -> Sequence[DagsterEvent]:
-        raise NotImplementedError()
+        ...
 
     @property
+    @abstractmethod
     def run_id(self) -> str:
         """The unique identifier of the executed run."""
-        raise NotImplementedError()
+        ...
 
-    @property
     def success(self) -> bool:
         """bool: Whether execution was successful."""
         return self.dagster_run.is_success

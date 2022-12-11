@@ -94,6 +94,8 @@ def _execute_run_command_body(
         cancellation_thread, cancellation_thread_shutdown_event = start_run_cancellation_thread(
             instance, pipeline_run_id
         )
+    else:
+        cancellation_thread, cancellation_thread_shutdown_event = None, None
 
     pipeline_run: DagsterRun = check.not_none(
         instance.get_run_by_id(pipeline_run_id),
@@ -134,10 +136,12 @@ def _execute_run_command_body(
         run_worker_failed = True
     finally:
         if instance.should_start_background_run_thread:
-            cancellation_thread_shutdown_event.set()
-            if cancellation_thread.is_alive():
-                cancellation_thread.join(timeout=15)
-                if cancellation_thread.is_alive():
+            shutdown_event = check.not_none(cancellation_thread_shutdown_event)
+            thread = check.not_none(cancellation_thread)
+            shutdown_event.set()
+            if thread.is_alive():
+                thread.join(timeout=15)
+                if thread.is_alive():
                     instance.report_engine_event(
                         "Cancellation thread did not shutdown gracefully",
                         pipeline_run,
@@ -197,6 +201,8 @@ def _resume_run_command_body(
         cancellation_thread, cancellation_thread_shutdown_event = start_run_cancellation_thread(
             instance, pipeline_run_id
         )
+    else:
+        cancellation_thread, cancellation_thread_shutdown_event = None, None
     pipeline_run = check.not_none(
         instance.get_run_by_id(pipeline_run_id),  # type: ignore
         "Pipeline run with id '{}' not found for run execution.".format(pipeline_run_id),
@@ -237,10 +243,12 @@ def _resume_run_command_body(
         run_worker_failed = True
     finally:
         if instance.should_start_background_run_thread:
-            cancellation_thread_shutdown_event.set()
-            if cancellation_thread.is_alive():
-                cancellation_thread.join(timeout=15)
-                if cancellation_thread.is_alive():
+            shutdown_event = check.not_none(cancellation_thread_shutdown_event)
+            thread = check.not_none(cancellation_thread)
+            shutdown_event.set()
+            if thread.is_alive():
+                thread.join(timeout=15)
+                if thread.is_alive():
                     instance.report_engine_event(
                         "Cancellation thread did not shutdown gracefully",
                         pipeline_run,

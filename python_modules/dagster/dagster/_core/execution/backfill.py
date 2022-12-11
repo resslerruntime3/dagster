@@ -241,16 +241,8 @@ def create_backfill_run(
 
     solids_to_execute = None
     solid_selection = None
-    if not backfill_job.from_failure and not backfill_job.reexecution_steps:
-        step_keys_to_execute = None
-        parent_run_id = None
-        root_run_id = None
-        known_state = None
-        if external_partition_set.solid_selection:
-            solids_to_execute = frozenset(external_partition_set.solid_selection)
-            solid_selection = external_partition_set.solid_selection
 
-    elif backfill_job.from_failure:
+    if backfill_job.from_failure:
         last_run = _fetch_last_run(instance, external_partition_set, partition_data.name)
         if not last_run or last_run.status != DagsterRunStatus.FAILURE:
             return None
@@ -264,36 +256,44 @@ def create_backfill_run(
             mode=external_partition_set.mode,
             use_parent_run_tags=False,  # don't inherit tags from the previous run
         )
-
-    elif backfill_job.reexecution_steps:
-        last_run = _fetch_last_run(instance, external_partition_set, partition_data.name)
-        parent_run_id = last_run.run_id if last_run else None
-        root_run_id = (last_run.root_run_id or last_run.run_id) if last_run else None
-        if parent_run_id and root_run_id:
-            tags = merge_dicts(
-                tags, {PARENT_RUN_ID_TAG: parent_run_id, ROOT_RUN_ID_TAG: root_run_id}
-            )
-        step_keys_to_execute = backfill_job.reexecution_steps
-        if last_run and last_run.status == DagsterRunStatus.SUCCESS:
-            known_state = KnownExecutionState.build_for_reexecution(
-                instance,
-                last_run,
-            ).update_for_step_selection(step_keys_to_execute)
-        else:
+    else:
+        if not backfill_job.reexecution_steps:
+            step_keys_to_execute = None
+            parent_run_id = None
+            root_run_id = None
             known_state = None
+            if external_partition_set.solid_selection:
+                solids_to_execute = frozenset(external_partition_set.solid_selection)
+                solid_selection = external_partition_set.solid_selection
+        else:
+            last_run = _fetch_last_run(instance, external_partition_set, partition_data.name)
+            parent_run_id = last_run.run_id if last_run else None
+            root_run_id = (last_run.root_run_id or last_run.run_id) if last_run else None
+            if parent_run_id and root_run_id:
+                tags = merge_dicts(
+                    tags, {PARENT_RUN_ID_TAG: parent_run_id, ROOT_RUN_ID_TAG: root_run_id}
+                )
+            step_keys_to_execute = backfill_job.reexecution_steps
+            if last_run and last_run.status == DagsterRunStatus.SUCCESS:
+                known_state = KnownExecutionState.build_for_reexecution(
+                    instance,
+                    last_run,
+                ).update_for_step_selection(step_keys_to_execute)
+            else:
+                known_state = None
 
-        if external_partition_set.solid_selection:
-            solids_to_execute = frozenset(external_partition_set.solid_selection)
-            solid_selection = external_partition_set.solid_selection
+            if external_partition_set.solid_selection:
+                solids_to_execute = frozenset(external_partition_set.solid_selection)
+                solid_selection = external_partition_set.solid_selection
 
-    external_execution_plan = repo_location.get_external_execution_plan(
-        external_pipeline,
-        partition_data.run_config,
-        check.not_none(external_partition_set.mode),
-        step_keys_to_execute=step_keys_to_execute,
-        known_state=known_state,
-        instance=instance,
-    )
+        external_execution_plan = repo_location.get_external_execution_plan(
+            external_pipeline,
+            partition_data.run_config,
+            check.not_none(external_partition_set.mode),
+            step_keys_to_execute=step_keys_to_execute,
+            known_state=known_state,
+            instance=instance,
+        )
 
     return instance.create_run(
         pipeline_snapshot=external_pipeline.pipeline_snapshot,

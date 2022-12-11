@@ -1,6 +1,6 @@
 import sys
 from collections import defaultdict
-from typing import Dict, Tuple
+from typing import Dict, Iterable, Sequence, Tuple
 
 from dagster import (
     DagsterEvent,
@@ -18,6 +18,7 @@ from dagster._core.storage.pipeline_run import (
 from dagster._core.storage.tags import PRIORITY_TAG
 from dagster._core.workspace.context import IWorkspaceProcessContext
 from dagster._daemon.daemon import IntervalDaemon
+from dagster._utils import len_iter
 from dagster._utils.error import serializable_error_info_from_exc_info
 
 
@@ -126,14 +127,14 @@ class QueuedRunCoordinatorDaemon(IntervalDaemon):
         in_progress_runs = self._get_in_progress_runs(instance)
 
         max_concurrent_runs_enabled = max_concurrent_runs != -1  # setting to -1 disables the limit
+        max_runs_to_launch = max_concurrent_runs - len_iter(in_progress_runs)
         if max_concurrent_runs_enabled:
-            max_runs_to_launch = max_concurrent_runs - len(in_progress_runs)
 
             # Possibly under 0 if runs were launched without queuing
             if max_runs_to_launch <= 0:
                 self._logger.info(
                     "{} runs are currently in progress. Maximum is {}, won't launch more.".format(
-                        len(in_progress_runs), max_concurrent_runs
+                        len_iter(in_progress_runs), max_concurrent_runs
                     )
                 )
                 return
@@ -197,11 +198,11 @@ class QueuedRunCoordinatorDaemon(IntervalDaemon):
         runs = instance.get_runs(filters=queued_runs_filter)[::-1]
         return runs
 
-    def _get_in_progress_runs(self, instance):
+    def _get_in_progress_runs(self, instance: DagsterInstance) -> Iterable[DagsterRun]:
         # Note: should add a maximum fetch limit https://github.com/dagster-io/dagster/issues/3339
         return instance.get_runs(filters=RunsFilter(statuses=IN_PROGRESS_RUN_STATUSES))
 
-    def _priority_sort(self, runs):
+    def _priority_sort(self, runs: Iterable[DagsterRun]) -> Sequence[DagsterRun]:
         def get_priority(run):
             priority_tag_value = run.tags.get(PRIORITY_TAG, "0")
             try:

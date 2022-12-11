@@ -169,7 +169,7 @@ class InputManagerWrapper(InputManager):
     def __init__(self, load_fn):
         self._load_fn = load_fn
 
-    def load_input(self, context):
+    def load_input(self, context: "InputContext") -> object:
         # the @input_manager decorated function (self._load_fn) may return a direct value that
         # should be used or an instance of an InputManager. So we call self._load_fn and see if the
         # result is an InputManager. If so we call it's load_input method

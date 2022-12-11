@@ -333,7 +333,7 @@ class PendingNodeInvocation:
         if is_in_composition():
             current_context().add_pending_invocation(self)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Any:
         from ..execution.context.invocation import UnboundOpExecutionContext
         from .decorators.solid_decorator import DecoratedOpFunction
         from .solid_invocation import op_invocation_result

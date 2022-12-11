@@ -65,6 +65,8 @@ if TYPE_CHECKING:
     from .op_definition import OpDefinition
     from .partition import PartitionedConfig, PartitionsDefinition
 
+T = TypeVar("T")
+
 
 def _check_node_defs_arg(
     graph_name: str, node_defs: Optional[Sequence[NodeDefinition]]
@@ -195,8 +197,8 @@ class GraphDefinition(NodeDefinition):
         input_mappings: Optional[Sequence[InputMapping]] = None,
         output_mappings: Optional[Sequence[OutputMapping]] = None,
         config: Optional[ConfigMapping] = None,
-        tags: Optional[Mapping[str, Any]] = None,
-        **kwargs,
+        tags: Optional[Mapping[str, str]] = None,
+        **kwargs: object,
     ):
         self._node_defs = _check_node_defs_arg(name, node_defs)
         self._dependencies = validate_dependency_dict(dependencies)
@@ -253,7 +255,7 @@ class GraphDefinition(NodeDefinition):
     def get_inputs_must_be_resolved_top_level(
         self, asset_layer: "AssetLayer", handle: Optional[NodeHandle] = None
     ) -> Sequence[InputDefinition]:
-        unresolveable_input_defs = []
+        unresolveable_input_defs: List[InputDefinition] = []
         for node in self.node_dict.values():
             cur_handle = NodeHandle(node.name, handle)
             for input_def in node.definition.get_inputs_must_be_resolved_top_level(
@@ -487,7 +489,7 @@ class GraphDefinition(NodeDefinition):
         description: Optional[str],
         config_schema: Any,
         config_or_config_fn: Any,
-    ):
+    ) -> "GraphDefinition":
         if not self.has_config_mapping:
             raise DagsterInvalidDefinitionError(
                 "Only graphs utilizing config mapping can be pre-configured. The graph "
@@ -509,7 +511,7 @@ class GraphDefinition(NodeDefinition):
             ),
         )
 
-    def node_names(self):
+    def node_names(self) -> Sequence[str]:
         return list(self._node_dict.keys())
 
     @public
@@ -518,7 +520,7 @@ class GraphDefinition(NodeDefinition):
         name: Optional[str] = None,
         description: Optional[str] = None,
         resource_defs: Optional[Mapping[str, ResourceDefinition]] = None,
-        config: Optional[Union[ConfigMapping, Mapping[str, object], "PartitionedConfig"]] = None,
+        config: Optional[Union[ConfigMapping, Mapping[str, object], "PartitionedConfig[T]"]] = None,
         tags: Optional[Mapping[str, str]] = None,
         metadata: Optional[Mapping[str, RawMetadataValue]] = None,
         logger_defs: Optional[Mapping[str, LoggerDefinition]] = None,
@@ -527,7 +529,7 @@ class GraphDefinition(NodeDefinition):
         op_retry_policy: Optional[RetryPolicy] = None,
         version_strategy: Optional[VersionStrategy] = None,
         op_selection: Optional[Sequence[str]] = None,
-        partitions_def: Optional["PartitionsDefinition"] = None,
+        partitions_def: Optional["PartitionsDefinition[T]"] = None,
         asset_layer: Optional["AssetLayer"] = None,
         input_values: Optional[Mapping[str, object]] = None,
         _asset_selection_data: Optional[AssetSelectionData] = None,
@@ -614,7 +616,7 @@ class GraphDefinition(NodeDefinition):
             _metadata_entries=_metadata_entries,
         ).get_job_def_for_subset_selection(op_selection)
 
-    def coerce_to_job(self):
+    def coerce_to_job(self) -> "JobDefinition":
         # attempt to coerce a Graph in to a Job, raising a useful error if it doesn't work
         try:
             return self.to_job()
@@ -806,13 +808,13 @@ def _validate_in_mappings(
     from .composition import MappedInputPlaceholder
 
     input_defs_by_name: Dict[str, InputDefinition] = OrderedDict()
-    mapping_keys = set()
+    mapping_keys: Set[str] = set()
 
     target_input_types_by_graph_input_name: Dict[str, Set[DagsterType]] = defaultdict(set)
 
     for mapping in input_mappings:
         # handle incorrect objects passed in as mappings
-        if not isinstance(mapping, InputMapping):
+        if not isinstance(mapping, InputMapping):  # pyright: ignore (isinstance check for error)
             if isinstance(mapping, InputDefinition):
                 raise DagsterInvalidDefinitionError(
                     f"In {class_name} '{name}' you passed an InputDefinition "

@@ -52,6 +52,8 @@ from .resource_requirement import ensure_requirements_satisfied
 from .utils import validate_tags
 from .version_strategy import VersionStrategy
 
+from typing_extensions import get_args
+
 if TYPE_CHECKING:
     from dagster._core.host_representation import PipelineIndex
     from dagster._core.snap import ConfigSchemaSnapshot, PipelineSnapshot
@@ -805,6 +807,7 @@ def _create_run_config_schema(
     # When executing with a subset pipeline, include the missing solids
     # from the original pipeline as ignored to allow execution with
     # run config that is valid for the original
+    ignored_solids: Sequence[Node] = []
     if isinstance(pipeline_def, JobDefinition) and pipeline_def.is_subset_pipeline:
         if isinstance(pipeline_def.graph, SubselectedGraphDefinition):  # op selection provided
             ignored_solids = pipeline_def.graph.get_top_level_omitted_nodes()

@@ -567,7 +567,7 @@ def _check_execute_external_pipeline_args(
     preset: Optional[str],
     tags: Optional[Mapping[str, str]],
     solid_selection: Optional[Sequence[str]],
-) -> Tuple[Mapping[str, object], str, Mapping[str, object], Optional[Sequence[str]]]:
+) -> Tuple[Mapping[str, object], str, Mapping[str, str], Optional[Sequence[str]]]:
     check.inst_param(external_pipeline, "external_pipeline", ExternalPipeline)
     run_config = check.opt_mapping_param(run_config, "run_config")
     check.opt_str_param(mode, "mode")

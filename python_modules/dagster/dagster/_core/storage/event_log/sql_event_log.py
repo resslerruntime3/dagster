@@ -938,14 +938,14 @@ class SqlEventLogStorage(EventLogStorage):
             results = conn.execute(query).fetchall()
 
         events = {}
-        try:
-            for (
-                record_id,
-                json_str,
-            ) in results:
+        for (
+            record_id,
+            json_str,
+        ) in results:
+            try:
                 events[record_id] = deserialize_as(json_str, EventLogEntry)
-        except (seven.JSONDecodeError, check.CheckError):
-            logging.warning("Could not parse event record id `%s`.", record_id)
+            except (seven.JSONDecodeError, check.CheckError):
+                logging.warning("Could not parse event record id `%s`.", record_id)
 
         return events
 
