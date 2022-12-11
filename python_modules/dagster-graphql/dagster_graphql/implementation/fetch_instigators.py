@@ -1,7 +1,7 @@
 from itertools import chain
 
 from dagster_graphql.schema.logs.log_level import GrapheneLogLevel
-from dagster_graphql.schema.util import HasContext
+from dagster_graphql.schema.util import ResolveInfo
 
 import dagster._check as check
 from dagster._core.definitions.instigation_logger import get_instigation_log_records
@@ -14,7 +14,7 @@ from .utils import capture_error
 
 
 @capture_error
-def get_unloadable_instigator_states_or_error(graphene_info: HasContext, instigator_type=None):
+def get_unloadable_instigator_states_or_error(graphene_info: ResolveInfo, instigator_type=None):
     from ..schema.instigation import GrapheneInstigationState, GrapheneInstigationStates
 
     check.opt_inst_param(instigator_type, "instigator_type", InstigatorType)

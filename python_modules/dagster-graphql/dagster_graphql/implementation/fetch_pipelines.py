@@ -1,4 +1,4 @@
-from graphene import ResolveInfo
+from dagster_graphql.schema.util import ResolveInfo
 
 import dagster._check as check
 from dagster._core.storage.pipeline_run import DagsterRun

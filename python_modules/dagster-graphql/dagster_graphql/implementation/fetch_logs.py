@@ -1,6 +1,6 @@
-from typing import List, Sequence
+from typing import Sequence
 
-from graphene import ResolveInfo
+from dagster_graphql.schema.util import ResolveInfo
 
 from dagster._core.storage.captured_log_manager import CapturedLogManager
 

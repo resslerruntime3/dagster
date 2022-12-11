@@ -1,3 +1,4 @@
+from dagster_graphql.schema.util import ResolveInfo
 import graphene
 
 from dagster._core.host_representation import ScheduleSelector
@@ -69,7 +70,7 @@ class GrapheneStartScheduleMutation(graphene.Mutation):
 
     @capture_error
     @check_permission(Permissions.START_SCHEDULE)
-    def mutate(self, graphene_info, schedule_selector):
+    def mutate(self, graphene_info: ResolveInfo, schedule_selector):
         return start_schedule(graphene_info, ScheduleSelector.from_graphql_input(schedule_selector))
 
 
@@ -87,7 +88,7 @@ class GrapheneStopRunningScheduleMutation(graphene.Mutation):
 
     @capture_error
     @check_permission(Permissions.STOP_RUNNING_SCHEDULE)
-    def mutate(self, graphene_info, schedule_origin_id, schedule_selector_id):
+    def mutate(self, graphene_info: ResolveInfo, schedule_origin_id, schedule_selector_id):
         return stop_schedule(graphene_info, schedule_origin_id, schedule_selector_id)
 
 

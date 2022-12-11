@@ -1,7 +1,7 @@
 from typing import Optional, Sequence, Tuple, cast
 
-from dagster_graphql.schema.util import HasContext
-from graphene import ResolveInfo
+from dagster_graphql.schema.util import ResolveInfo
+
 
 import dagster._check as check
 from dagster._core.errors import DagsterRunNotFoundError
@@ -27,7 +27,7 @@ def _get_run(instance: DagsterInstance, run_id: str) -> DagsterRun:
 
 
 def compute_step_keys_to_execute(
-    graphene_info: HasContext, execution_params: ExecutionParams
+    graphene_info: ResolveInfo, execution_params: ExecutionParams
 ) -> Tuple[Optional[Sequence[str]], Optional[KnownExecutionState]]:
     check.inst_param(graphene_info, "graphene_info", ResolveInfo)
     check.inst_param(execution_params, "execution_params", ExecutionParams)
@@ -60,7 +60,7 @@ def is_resume_retry(execution_params):
 
 
 def create_valid_pipeline_run(
-    graphene_info: HasContext,
+    graphene_info: ResolveInfo,
     external_pipeline: ExternalPipeline,
     execution_params: ExecutionParams,
 ):

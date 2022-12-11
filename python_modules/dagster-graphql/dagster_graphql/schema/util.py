@@ -18,6 +18,8 @@ class HasContext(Protocol):
     def context(self) -> WorkspaceRequestContext:
         ...
 
+class ResolveInfo(HasContext, graphene.ResolveInfo):
+    pass
 
 def non_null_list(of_type):
     return graphene.NonNull(graphene.List(graphene.NonNull(of_type)))

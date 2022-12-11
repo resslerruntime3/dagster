@@ -24,7 +24,7 @@ from typing import (
 )
 
 from dagster_graphql.schema.errors import GrapheneError
-from graphene import ResolveInfo
+from dagster_graphql.schema.util import ResolveInfo
 from typing_extensions import ParamSpec, TypeAlias
 
 import dagster._check as check

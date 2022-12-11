@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+from dagster_graphql.schema.util import ResolveInfo
 
 import pytest
 from dagster_graphql.implementation.utils import (
@@ -26,37 +27,37 @@ PERMISSIONS_QUERY = """
 
 class FakeMutation:
     @check_permission("fake_permission")
-    def mutate(self, graphene_info, **_kwargs):
+    def mutate(self, graphene_info: ResolveInfo, **_kwargs):
         pass
 
 
 class FakeOtherPermissionMutation:
     @check_permission("fake_other_permission")
-    def mutate(self, graphene_info, **_kwargs):
+    def mutate(self, graphene_info: ResolveInfo, **_kwargs):
         pass
 
 
 class FakeMissingPermissionMutation:
     @check_permission("fake_missing_permission")
-    def mutate(self, graphene_info, **_kwargs):
+    def mutate(self, graphene_info: ResolveInfo, **_kwargs):
         pass
 
 
 class FakeEnumPermissionMutation:
     @check_permission(Permissions.LAUNCH_PIPELINE_EXECUTION)
-    def mutate(self, graphene_info, **_kwargs):
+    def mutate(self, graphene_info: ResolveInfo, **_kwargs):
         pass
 
 
 class FakeOtherEnumPermisisonMutation:
     @check_permission(Permissions.LAUNCH_PIPELINE_REEXECUTION)
-    def mutate(self, graphene_info, **_kwargs):
+    def mutate(self, graphene_info: ResolveInfo, **_kwargs):
         pass
 
 
 class FakeMissingEnumPermisisonMutation:
     @check_permission(Permissions.LAUNCH_PARTITION_BACKFILL)
-    def mutate(self, graphene_info, **_kwargs):
+    def mutate(self, graphene_info: ResolveInfo, **_kwargs):
         pass
 
 
