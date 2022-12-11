@@ -9,6 +9,7 @@ from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, 
 
 import pendulum
 import sqlalchemy as db
+from sqlalchemy.engine import Connection, Row
 import sqlalchemy.exc as db_exc
 
 import dagster._check as check
@@ -76,16 +77,16 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
     """Base class for SQL based run storages."""
 
     @abstractmethod
-    def connect(self):
+    def connect(self) -> Connection:
         """Context manager yielding a sqlalchemy.engine.Connection."""
 
     @abstractmethod
-    def upgrade(self):
+    def upgrade(self) -> None:
         """This method should perform any schema or data migrations necessary to bring an
         out-of-date instance of the storage up to date.
         """
 
-    def fetchall(self, query):
+    def fetchall(self, query) -> Sequence[Row]:
         with self.connect() as conn:
             result_proxy = conn.execute(query)
             res = result_proxy.fetchall()
@@ -93,7 +94,7 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
 
         return res
 
-    def fetchone(self, query):
+    def fetchone(self, query) -> Optional[Row]:
         with self.connect() as conn:
             result_proxy = conn.execute(query)
             row = result_proxy.fetchone()
@@ -144,7 +145,7 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
 
         return pipeline_run
 
-    def handle_run_event(self, run_id: str, event: DagsterEvent):
+    def handle_run_event(self, run_id: str, event: DagsterEvent) -> None:
         check.str_param(run_id, "run_id")
         check.inst_param(event, "event", DagsterEvent)
 
@@ -196,7 +197,7 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
         # overriden with an old value.
         return run.with_status(status)
 
-    def _rows_to_runs(self, rows: Iterable[Tuple]) -> Sequence[DagsterRun]:
+    def _rows_to_runs(self, rows: Iterable[Row]) -> Sequence[DagsterRun]:
         return list(map(self._row_to_run, rows))
 
     def _add_cursor_limit_to_query(
@@ -563,7 +564,7 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
                     [dict(run_id=run_id, key=tag, value=new_tags[tag]) for tag in added_tags],
                 )
 
-    def get_run_group(self, run_id: str) -> Optional[Tuple[str, Iterable[DagsterRun]]]:
+    def get_run_group(self, run_id: str) -> Tuple[str, Iterable[DagsterRun]]:
         check.str_param(run_id, "run_id")
         pipeline_run = self.get_run_by_id(run_id)
         if not pipeline_run:

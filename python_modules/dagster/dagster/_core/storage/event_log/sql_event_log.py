@@ -6,6 +6,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, 
 
 import pendulum
 import sqlalchemy as db
+import sqlalchemy.exc as db_exc
 
 import dagster._check as check
 import dagster._seven as seven
@@ -154,7 +155,7 @@ class SqlEventLogStorage(EventLogStorage):
         with self.index_connection() as conn:
             try:
                 conn.execute(insert_statement)
-            except db.exc.IntegrityError:
+            except db_exc.IntegrityError:
                 conn.execute(update_statement)
 
     def _get_asset_entry_values(self, event: EventLogEntry, has_asset_key_index_cols):
@@ -707,7 +708,7 @@ class SqlEventLogStorage(EventLogStorage):
         with self.index_connection() as conn:
             try:
                 conn.execute(query)
-            except db.exc.IntegrityError:
+            except db_exc.IntegrityError:
                 conn.execute(
                     SecondaryIndexMigrationTable.update()  # pylint: disable=no-value-for-parameter
                     .where(SecondaryIndexMigrationTable.c.name == name)

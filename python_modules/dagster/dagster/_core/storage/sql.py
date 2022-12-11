@@ -6,7 +6,7 @@ from typing import Optional
 import sqlalchemy as db
 from alembic.command import downgrade, stamp, upgrade
 from alembic.config import Config
-from alembic.migration import MigrationContext  # pylint: disable=import-error
+from alembic.migration import MigrationContext  # pyright: ignore (dynamic import)
 from alembic.script import ScriptDirectory
 from sqlalchemy.ext.compiler import compiles
 
