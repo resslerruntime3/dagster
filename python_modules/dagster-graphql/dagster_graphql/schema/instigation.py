@@ -1,12 +1,13 @@
 import sys
+from typing import TYPE_CHECKING, Optional, Sequence
 import warnings
 
 import graphene
 import pendulum
 
 import dagster._check as check
+from dagster._core.definitions.run_request import RunRequest
 from dagster._core.definitions.schedule_definition import ScheduleExecutionData
-from dagster._core.definitions.sensor_definition import RunRequest
 from dagster._core.scheduler.instigation import (
     InstigatorState,
     InstigatorTick,

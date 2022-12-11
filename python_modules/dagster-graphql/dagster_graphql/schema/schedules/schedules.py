@@ -1,3 +1,4 @@
+from typing import List, Optional, cast
 import graphene
 from dagster_graphql.implementation.loader import RepositoryScopedBatchLoader
 
@@ -71,7 +72,7 @@ class GrapheneSchedule(graphene.ObjectType):
             description=external_schedule.description,
         )
 
-    def resolve_id(self, _):
+    def resolve_id(self, _graphene_info: ResolveInfo):
         return self._external_schedule.get_external_origin_id()
 
     def resolve_scheduleState(self, _graphene_info):
@@ -96,19 +97,22 @@ class GrapheneSchedule(graphene.ObjectType):
             external_partition_set=external_partition_set,
         )
 
-    def resolve_futureTicks(self, _graphene_info, **kwargs):
-        cursor = kwargs.get(
+    def resolve_futureTicks(self, _graphene_info: ResolveInfo, **kwargs):
+        cursor = cast(float, kwargs.get(
             "cursor", get_timestamp_from_utc_datetime(get_current_datetime_in_utc())
-        )
-        tick_times = []
+        ))
+        limit = cast(Optional[int], kwargs.get("limit"))
+        raw_until = cast(Optional[float], kwargs.get("until"))
+        until = float(raw_until) if raw_until is not None else None
+
+        tick_times: List[float] = []
         time_iter = self._external_schedule.execution_time_iterator(cursor)
 
-        until = float(kwargs.get("until")) if kwargs.get("until") else None
 
-        if until:
+        if until is not None:
             currentTime = None
             while (not currentTime or currentTime < until) and (
-                not kwargs.get("limit") or len(tick_times) < kwargs.get("limit")
+                limit is None or len(tick_times) < limit
             ):
                 try:
                     currentTime = next(time_iter).timestamp()
@@ -117,7 +121,7 @@ class GrapheneSchedule(graphene.ObjectType):
                 except StopIteration:
                     break
         else:
-            limit = kwargs.get("limit", 10)
+            limit = limit if limit is not None else 10
 
             for _ in range(limit):
                 tick_times.append(next(time_iter).timestamp())
@@ -130,7 +134,7 @@ class GrapheneSchedule(graphene.ObjectType):
         new_cursor = tick_times[-1] + 1 if tick_times else cursor
         return GrapheneFutureInstigationTicks(results=future_ticks, cursor=new_cursor)
 
-    def resolve_futureTick(self, _graphene_info, tick_timestamp):
+    def resolve_futureTick(self, _graphene_info: ResolveInfo, tick_timestamp: float):
         return GrapheneFutureInstigationTick(self._schedule_state, float(tick_timestamp))
 
 

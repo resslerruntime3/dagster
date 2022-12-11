@@ -1,3 +1,5 @@
+from typing import Optional
+
 import graphene
 from dagster_graphql.implementation.fetch_partition_sets import (
     get_partition_by_name,
@@ -150,13 +152,13 @@ class GraphenePartition(graphene.ObjectType):
             PARTITION_SET_TAG: self._external_partition_set.name,
             PARTITION_NAME_TAG: self._partition_name,
         }
-        if filters is not None:
-            filters = filters.to_selector()
+        if filter is not None:
+            selector = filter.to_selector()
             runs_filter = RunsFilter(
-                run_ids=filters.run_ids,
-                pipeline_name=filters.job_name,
-                statuses=filters.statuses,
-                tags=merge_dicts(filters.tags, partition_tags),
+                run_ids=selector.run_ids,
+                pipeline_name=selector.job_name,
+                statuses=selector.statuses,
+                tags=merge_dicts(selector.tags, partition_tags),
             )
         else:
             runs_filter = RunsFilter(tags=partition_tags)

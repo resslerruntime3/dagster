@@ -477,7 +477,7 @@ class GrapheneDagitQuery(graphene.ObjectType):
     def resolve_sensorOrError(self, graphene_info, sensorSelector):
         return get_sensor_or_error(graphene_info, SensorSelector.from_graphql_input(sensorSelector))
 
-    def resolve_sensorsOrError(self, graphene_info, **kwargs):
+    def resolve_sensorsOrError(self, graphene_info: ResolveInfo, repositorySelector: InputObject):
         return get_sensors_or_error(
             graphene_info,
             RepositorySelector.from_graphql_input(kwargs.get("repositorySelector")),
@@ -715,7 +715,7 @@ class GrapheneDagitQuery(graphene.ObjectType):
     def resolve_logsForRun(self, graphene_info, runId, afterCursor=None, limit=None):
         return get_logs_for_run(graphene_info, runId, afterCursor, limit)
 
-    def resolve_capturedLogsMetadata(self, graphene_info, logKey):
+    def resolve_capturedLogsMetadata(self, graphene_info, logKey: Sequence[str]) -> GrapheneCapturedLogsMetadata:
         return get_captured_log_metadata(graphene_info, logKey)
 
     def resolve_capturedLogs(self, graphene_info, logKey, cursor=None, limit=None):

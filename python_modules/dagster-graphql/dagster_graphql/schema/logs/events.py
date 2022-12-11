@@ -1,7 +1,10 @@
+from typing import Optional, Union
+from dagster_graphql.schema.pipelines.pipeline import GrapheneRun
 import graphene
 
 import dagster._check as check
-from dagster._core.events import AssetLineageInfo, DagsterEventType
+from dagster._core.definitions.events import AssetLineageInfo
+from dagster._core.events import DagsterEventType
 from dagster._core.execution.plan.objects import ErrorSource
 from dagster._core.execution.stats import RunStepKeyStatsSnapshot
 
@@ -314,7 +317,7 @@ class AssetEventMixin:
         self._event = event
         self._metadata = metadata
 
-    def resolve_assetKey(self, _graphene_info):
+    def resolve_assetKey(self, _graphene_info: ResolveInfo) -> Optional[GrapheneAssetKey]:
         asset_key = self._metadata.asset_key
 
         if not asset_key:
@@ -322,12 +325,12 @@ class AssetEventMixin:
 
         return GrapheneAssetKey(path=asset_key.path)
 
-    def resolve_runOrError(self, graphene_info):
+    def resolve_runOrError(self, graphene_info: ResolveInfo) -> Union[GrapheneRun, GrapheneRunNotFoundError]:
         return get_run_by_id(graphene_info, self._event.run_id)
 
-    def resolve_stepStats(self, graphene_info):
-        run_id = self.runId  # pylint: disable=no-member
-        step_key = self.stepKey  # pylint: disable=no-member
+    def resolve_stepStats(self, graphene_info: ResolveInfo) -> "GrapheneRunStepStats":
+        run_id = self.runId  # type: ignore (value obj access)
+        step_key = self.stepKey  # type: ignore (value obj access)
         stats = get_step_stats(graphene_info, run_id, step_keys=[step_key])
         return stats[0]
 

@@ -1,8 +1,7 @@
-import pendulum
-
 import dagster._check as check
+import dagster._seven.compat.pendulum as pendulum
+from dagster._core.definitions import AssetKey
 from dagster._core.errors import DagsterError
-from dagster._core.events import AssetKey
 from dagster._core.execution.backfill import (
     BulkActionStatus,
     PartitionBackfill,
