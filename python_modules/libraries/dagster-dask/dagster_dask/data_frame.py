@@ -43,10 +43,14 @@ EngineParquetOptions = Enum(
     ],
 )
 
+# NOTE (2022-12-12): Attribute access to `dd` has been marked with `# pyright: ignore
+# [reportPrivateImportUsage]` because dask does not correctly mark the symbols we are accessing as
+# pbblic (though they are intending to). Should be fixed in later releases of dask. See:
+# https://github.com/dask/dask/issues/9710
 
 DataFrameReadTypes = {
     "csv": {
-        "function": dd.read_csv,
+        "function": dd.read_csv,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -77,7 +81,7 @@ DataFrameReadTypes = {
         },
     },
     "parquet": {
-        "function": dd.read_parquet,
+        "function": dd.read_parquet,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -119,7 +123,7 @@ DataFrameReadTypes = {
         },
     },
     "hdf": {
-        "function": dd.read_hdf,
+        "function": dd.read_hdf,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -142,7 +146,7 @@ DataFrameReadTypes = {
         },
     },
     "json": {
-        "function": dd.read_json,
+        "function": dd.read_json,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -170,7 +174,7 @@ DataFrameReadTypes = {
         },
     },
     "sql_table": {
-        "function": dd.read_sql_table,
+        "function": dd.read_sql_table,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": False,
         "options": {
             "table": (Any, True, "Select columns from here."),
@@ -212,7 +216,7 @@ DataFrameReadTypes = {
         },
     },
     "table": {
-        "function": dd.read_table,
+        "function": dd.read_table,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -243,7 +247,7 @@ DataFrameReadTypes = {
         },
     },
     "fwf": {
-        "function": dd.read_fwf,
+        "function": dd.read_fwf,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -274,7 +278,7 @@ DataFrameReadTypes = {
         },
     },
     "orc": {
-        "function": dd.read_orc,
+        "function": dd.read_orc,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Absolute or relative filepath(s)."),
@@ -291,7 +295,7 @@ DataFrameReadTypes = {
 
 DataFrameToTypes = {
     "csv": {
-        "function": dd.DataFrame.to_csv,
+        "function": dd.DataFrame.to_csv,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (
@@ -323,7 +327,7 @@ DataFrameToTypes = {
         },
     },
     "parquet": {
-        "function": dd.DataFrame.to_parquet,
+        "function": dd.DataFrame.to_parquet,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Destination directory for data."),
@@ -378,7 +382,7 @@ DataFrameToTypes = {
         },
     },
     "hdf": {
-        "function": dd.DataFrame.to_hdf,
+        "function": dd.DataFrame.to_hdf,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Path to a target filename."),
@@ -391,7 +395,7 @@ DataFrameToTypes = {
         },
     },
     "json": {
-        "function": dd.DataFrame.to_json,
+        "function": dd.DataFrame.to_json,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": True,
         "options": {
             "path": (Any, True, "Location to write to."),
@@ -411,7 +415,7 @@ DataFrameToTypes = {
         },
     },
     "sql": {
-        "function": dd.DataFrame.to_sql,
+        "function": dd.DataFrame.to_sql,  # pyright: ignore [reportPrivateImportUsage]
         "is_path_based": False,
         "options": {
             "name": (String, True, "Name of SQL table."),
@@ -529,7 +533,7 @@ def _dataframe_materializer_config():
 
 @dagster_type_materializer(_dataframe_materializer_config())
 def dataframe_materializer(_context, config, dask_df):
-    check.inst_param(dask_df, "dask_df", dd.DataFrame)
+    check.inst_param(dask_df, "dask_df", dd.DataFrame)  # pyright: ignore [reportPrivateImportUsage]
 
     to_specs = config["to"]
 
@@ -568,7 +572,7 @@ def dataframe_materializer(_context, config, dask_df):
 
 
 def df_type_check(_, value):
-    if not isinstance(value, dd.DataFrame):
+    if not isinstance(value, dd.DataFrame):  # pyright: ignore [reportPrivateImportUsage]
         return TypeCheck(success=False)
     return TypeCheck(
         success=True,
