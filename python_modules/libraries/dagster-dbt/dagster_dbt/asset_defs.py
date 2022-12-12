@@ -170,8 +170,8 @@ def _get_node_description(node_info, display_raw_sql):
 
 def _get_node_metadata(node_info: Mapping[str, Any]) -> Mapping[str, Any]:
     metadata: Dict[str, Any] = {}
-    columns = node_info.get("columns", [])
-    if len(columns) > 0:
+    columns = node_info.get("columns")
+    if columns is not None:
         metadata["table_schema"] = MetadataValue.table_schema(
             TableSchema(
                 columns=[
