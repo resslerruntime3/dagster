@@ -114,7 +114,9 @@ class StepInputSource(ABC):
         return []
 
     @abstractmethod
-    def load_input_object(self, step_context: "StepExecutionContext", input_def: InputDefinition) -> Iterator[object]:
+    def load_input_object(
+        self, step_context: "StepExecutionContext", input_def: InputDefinition
+    ) -> Iterator[object]:
         ...
 
     def required_resource_keys(self, _pipeline_def: PipelineDefinition) -> AbstractSet[str]:
@@ -837,7 +839,9 @@ class FromMultipleSources(
         ]
 
 
-def _load_input_with_input_manager(input_manager: "InputManager", context: "InputContext") -> Iterator[object]:
+def _load_input_with_input_manager(
+    input_manager: "InputManager", context: "InputContext"
+) -> Iterator[object]:
     from dagster._core.execution.context.system import StepExecutionContext
 
     step_context = cast(StepExecutionContext, context.step_context)

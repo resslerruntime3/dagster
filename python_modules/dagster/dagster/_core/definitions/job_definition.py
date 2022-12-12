@@ -1,6 +1,5 @@
 import importlib
 import os
-from typing_extensions import Self
 import warnings
 from functools import update_wrapper
 from typing import (
@@ -17,6 +16,8 @@ from typing import (
     Union,
     cast,
 )
+
+from typing_extensions import Self
 
 import dagster._check as check
 from dagster._annotations import public

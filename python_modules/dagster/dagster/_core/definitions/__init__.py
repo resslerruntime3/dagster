@@ -105,12 +105,10 @@ from .schedule_definition import (
     DefaultScheduleStatus as DefaultScheduleStatus,
     ScheduleDefinition as ScheduleDefinition,
     ScheduleEvaluationContext as ScheduleEvaluationContext,
-    ScheduleEvaluationContext as ScheduleEvaluationContext,
 )
 from .sensor_definition import (
     DefaultSensorStatus as DefaultSensorStatus,
     SensorDefinition as SensorDefinition,
-    SensorEvaluationContext as SensorEvaluationContext,
     SensorEvaluationContext as SensorEvaluationContext,
 )
 from .solid_container import create_execution_structure as create_execution_structure

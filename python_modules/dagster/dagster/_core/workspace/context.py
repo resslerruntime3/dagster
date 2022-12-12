@@ -1,12 +1,13 @@
 import sys
 import threading
 import time
-from typing_extensions import Self
 import warnings
 from abc import ABC, abstractmethod
 from contextlib import ExitStack
 from itertools import count
 from typing import TYPE_CHECKING, Dict, Mapping, Optional, Sequence, Union, cast
+
+from typing_extensions import Self
 
 import dagster._check as check
 from dagster._core.errors import (

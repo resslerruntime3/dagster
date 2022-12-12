@@ -3,7 +3,6 @@ from typing import cast
 from dagster_graphql.schema.runs import GrapheneLaunchRunSuccess
 from dagster_graphql.schema.util import ResolveInfo
 
-
 import dagster._check as check
 from dagster._core.execution.plan.resume_retry import ReexecutionStrategy
 from dagster._core.host_representation.selector import PipelineSelector

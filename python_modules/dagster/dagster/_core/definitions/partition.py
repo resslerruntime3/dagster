@@ -76,6 +76,7 @@ PartitionSelectorFunction: TypeAlias = Callable[
     Union["Partition[T]", Sequence["Partition[T]"], SkipReason],
 ]
 
+
 class Partition(Generic[T]):
     """
     A Partition represents a single slice of the entire set of a job's possible work. It consists

@@ -383,9 +383,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ListRepositories(
-        self, request, _context
-    ) -> api_pb2.ListRepositoriesReply:
+    def ListRepositories(self, request, _context) -> api_pb2.ListRepositoriesReply:
         if self._serializable_load_error:
             return api_pb2.ListRepositoriesReply(
                 serialized_list_repositories_response_or_error=serialize_dagster_namedtuple(
@@ -408,9 +406,7 @@ class DagsterApiServer(DagsterApiServicer):
             serialized_list_repositories_response_or_error=serialize_dagster_namedtuple(response)
         )
 
-    def ExternalPartitionNames(
-        self, request, _context
-    ) -> api_pb2.ExternalPartitionNamesReply:
+    def ExternalPartitionNames(self, request, _context) -> api_pb2.ExternalPartitionNamesReply:
         partition_names_args = deserialize_as(
             request.serialized_partition_names_args,
             PartitionNamesArgs,
@@ -424,9 +420,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ExternalNotebookData(
-        self, request, _context
-    ) -> api_pb2.ExternalNotebookDataReply:
+    def ExternalNotebookData(self, request, _context) -> api_pb2.ExternalNotebookDataReply:
         notebook_path = request.notebook_path
         check.str_param(notebook_path, "notebook_path")
         return api_pb2.ExternalNotebookDataReply(content=get_notebook_data(notebook_path))
@@ -460,9 +454,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ExternalPartitionTags(
-        self, request, _context
-    ) -> api_pb2.ExternalPartitionTagsReply:
+    def ExternalPartitionTags(self, request, _context) -> api_pb2.ExternalPartitionTagsReply:
         partition_args = deserialize_as(request.serialized_partition_args, PartitionArgs)
 
         return api_pb2.ExternalPartitionTagsReply(
@@ -520,9 +512,7 @@ class DagsterApiServer(DagsterApiServicer):
             serialized_external_repository_data=serialized_external_repository_data,
         )
 
-    def ExternalJob(
-        self, request, _context
-    ) -> api_pb2.ExternalJobReply:
+    def ExternalJob(self, request, _context) -> api_pb2.ExternalJobReply:
         try:
             repository_origin = deserialize_as(
                 request.serialized_repository_origin,

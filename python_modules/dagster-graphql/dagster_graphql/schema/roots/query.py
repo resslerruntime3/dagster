@@ -289,17 +289,17 @@ class GrapheneDagitQuery(graphene.ObjectType):
 
     isPipelineConfigValid = graphene.Field(
         graphene.NonNull(GraphenePipelineConfigValidationResult),
-        pipeline = graphene.Argument(graphene.NonNull(GraphenePipelineSelector)),
-        mode = graphene.Argument(graphene.NonNull(graphene.String)),
-        runConfigData = graphene.Argument(GrapheneRunConfigData),
+        pipeline=graphene.Argument(graphene.NonNull(GraphenePipelineSelector)),
+        mode=graphene.Argument(graphene.NonNull(graphene.String)),
+        runConfigData=graphene.Argument(GrapheneRunConfigData),
         description="Retrieve whether the run configuration is valid or invalid.",
     )
 
     executionPlanOrError = graphene.Field(
         graphene.NonNull(GrapheneExecutionPlanOrError),
-        pipeline = graphene.Argument(graphene.NonNull(GraphenePipelineSelector)),
-        mode = graphene.Argument(graphene.NonNull(graphene.String)),
-        runConfigData = graphene.Argument(GrapheneRunConfigData),
+        pipeline=graphene.Argument(graphene.NonNull(GraphenePipelineSelector)),
+        mode=graphene.Argument(graphene.NonNull(graphene.String)),
+        runConfigData=graphene.Argument(GrapheneRunConfigData),
         description="Retrieve the execution plan for a job and its run configuration.",
     )
 
@@ -405,7 +405,9 @@ class GrapheneDagitQuery(graphene.ObjectType):
         description="Captured logs are the stdout/stderr logs for a given log key",
     )
 
-    def resolve_repositoriesOrError(self, graphene_info: ResolveInfo, repositorySelector: Optional[InputObject] = None):
+    def resolve_repositoriesOrError(
+        self, graphene_info: ResolveInfo, repositorySelector: Optional[InputObject] = None
+    ):
         if repositorySelector:
             return GrapheneRepositoryConnection(
                 nodes=[
@@ -417,10 +419,11 @@ class GrapheneDagitQuery(graphene.ObjectType):
             )
         return fetch_repositories(graphene_info)
 
-    def resolve_repositoryOrError(self, graphene_info: ResolveInfo, repositorySelector: InputObject):
+    def resolve_repositoryOrError(
+        self, graphene_info: ResolveInfo, repositorySelector: InputObject
+    ):
         return fetch_repository(
-            graphene_info,
-            RepositorySelector.from_graphql_input(repositorySelector)
+            graphene_info, RepositorySelector.from_graphql_input(repositorySelector)
         )
 
     def resolve_workspaceOrError(self, graphene_info: ResolveInfo):
@@ -429,7 +432,12 @@ class GrapheneDagitQuery(graphene.ObjectType):
     def resolve_locationStatusesOrError(self, graphene_info: ResolveInfo):
         return fetch_location_statuses(graphene_info.context)
 
-    def resolve_pipelineSnapshotOrError(self, graphene_info: ResolveInfo, snapshotId: Optional[str] = None, activePipelineSelector: Optional[InputObject] = None):
+    def resolve_pipelineSnapshotOrError(
+        self,
+        graphene_info: ResolveInfo,
+        snapshotId: Optional[str] = None,
+        activePipelineSelector: Optional[InputObject] = None,
+    ):
         check.invariant(
             not (snapshotId and activePipelineSelector),
             "Must only pass one of snapshotId or activePipelineSelector",
@@ -447,7 +455,9 @@ class GrapheneDagitQuery(graphene.ObjectType):
         else:
             return get_pipeline_snapshot_or_error_from_snapshot_id(graphene_info, snapshotId)
 
-    def resolve_graphOrError(self, graphene_info: ResolveInfo, selector: Optional[InputObject] = None):
+    def resolve_graphOrError(
+        self, graphene_info: ResolveInfo, selector: Optional[InputObject] = None
+    ):
         assert selector is not None
         graph_selector = graph_selector_from_graphql(selector)
         return get_graph_or_error(graphene_info, graph_selector)
@@ -478,15 +488,17 @@ class GrapheneDagitQuery(graphene.ObjectType):
             RepositorySelector.from_graphql_input(repositorySelector),
         )
 
-    def resolve_instigationStateOrError(self, graphene_info: ResolveInfo, instigationSelector: InputObject):
+    def resolve_instigationStateOrError(
+        self, graphene_info: ResolveInfo, instigationSelector: InputObject
+    ):
         return get_instigator_state_or_error(
             graphene_info, InstigatorSelector.from_graphql_input(instigationSelector)
         )
 
-    def resolve_unloadableInstigationStatesOrError(self, graphene_info: ResolveInfo, instigationType: Optional[GrapheneInstigationType] = None):
-        instigation_type = (
-            InstigatorType(instigationType) if instigationType else None
-        )
+    def resolve_unloadableInstigationStatesOrError(
+        self, graphene_info: ResolveInfo, instigationType: Optional[GrapheneInstigationType] = None
+    ):
+        instigation_type = InstigatorType(instigationType) if instigationType else None
         return get_unloadable_instigator_states_or_error(graphene_info, instigation_type)
 
     def resolve_pipelineOrError(self, graphene_info: ResolveInfo, params: InputObject):
@@ -495,7 +507,13 @@ class GrapheneDagitQuery(graphene.ObjectType):
             pipeline_selector_from_graphql(params),
         )
 
-    def resolve_pipelineRunsOrError(self, _graphene_info: ResolveInfo, filter: Optional[InputObject] = None, cursor: Optional[str] = None, limit: Optional[int] = None):
+    def resolve_pipelineRunsOrError(
+        self,
+        _graphene_info: ResolveInfo,
+        filter: Optional[InputObject] = None,
+        cursor: Optional[str] = None,
+        limit: Optional[int] = None,
+    ):
         if filter is not None:
             filter = filter.to_selector()
 
@@ -508,7 +526,13 @@ class GrapheneDagitQuery(graphene.ObjectType):
     def resolve_pipelineRunOrError(self, graphene_info: ResolveInfo, runId):
         return get_run_by_id(graphene_info, runId)
 
-    def resolve_runsOrError(self, _graphene_info: ResolveInfo, filter: Optional[InputObject] = None, cursor: Optional[str] = None, limit: Optional[int] = None):
+    def resolve_runsOrError(
+        self,
+        _graphene_info: ResolveInfo,
+        filter: Optional[InputObject] = None,
+        cursor: Optional[str] = None,
+        limit: Optional[int] = None,
+    ):
         if filter is not None:
             filter = filter.to_selector()
 
@@ -521,14 +545,18 @@ class GrapheneDagitQuery(graphene.ObjectType):
     def resolve_runOrError(self, graphene_info: ResolveInfo, runId):
         return get_run_by_id(graphene_info, runId)
 
-    def resolve_runGroupsOrError(self, graphene_info: ResolveInfo, filter: Optional[InputObject] = None, cursor: Optional[str] = None, limit: Optional[int] = None):
+    def resolve_runGroupsOrError(
+        self,
+        graphene_info: ResolveInfo,
+        filter: Optional[InputObject] = None,
+        cursor: Optional[str] = None,
+        limit: Optional[int] = None,
+    ):
         if filter is not None:
             filter = filter.to_selector()
 
         return GrapheneRunGroupsOrError(
-            results=get_run_groups(
-                graphene_info, filter, cursor, limit
-            )
+            results=get_run_groups(graphene_info, filter, cursor, limit)
         )
 
     def resolve_partitionSetsOrError(
@@ -558,7 +586,13 @@ class GrapheneDagitQuery(graphene.ObjectType):
     def resolve_runGroupOrError(self, graphene_info: ResolveInfo, runId):
         return get_run_group(graphene_info, runId)
 
-    def resolve_isPipelineConfigValid(self, graphene_info: ResolveInfo, pipeline: InputObject, mode: str, runConfigData: Optional[InputObject] = None):
+    def resolve_isPipelineConfigValid(
+        self,
+        graphene_info: ResolveInfo,
+        pipeline: InputObject,
+        mode: str,
+        runConfigData: Optional[InputObject] = None,
+    ):
         return validate_pipeline_config(
             graphene_info,
             pipeline_selector_from_graphql(pipeline),
@@ -566,7 +600,13 @@ class GrapheneDagitQuery(graphene.ObjectType):
             mode,
         )
 
-    def resolve_executionPlanOrError(self, graphene_info: ResolveInfo, pipeline: InputObject, mode: str, runConfigData: Optional[InputObject] = None):
+    def resolve_executionPlanOrError(
+        self,
+        graphene_info: ResolveInfo,
+        pipeline: InputObject,
+        mode: str,
+        runConfigData: Optional[InputObject] = None,
+    ):
         return get_execution_plan(
             graphene_info,
             pipeline_selector_from_graphql(pipeline),
@@ -574,7 +614,9 @@ class GrapheneDagitQuery(graphene.ObjectType):
             mode,
         )
 
-    def resolve_runConfigSchemaOrError(self, graphene_info: ResolveInfo, selector: InputObject, mode: Optional[str] = None):
+    def resolve_runConfigSchemaOrError(
+        self, graphene_info: ResolveInfo, selector: InputObject, mode: Optional[str] = None
+    ):
         return resolve_run_config_schema_or_error(
             graphene_info,
             pipeline_selector_from_graphql(selector),

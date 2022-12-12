@@ -129,7 +129,6 @@ class QueuedRunCoordinatorDaemon(IntervalDaemon):
         max_concurrent_runs_enabled = max_concurrent_runs != -1  # setting to -1 disables the limit
         max_runs_to_launch = max_concurrent_runs - len_iter(in_progress_runs)
         if max_concurrent_runs_enabled:
-
             # Possibly under 0 if runs were launched without queuing
             if max_runs_to_launch <= 0:
                 self._logger.info(

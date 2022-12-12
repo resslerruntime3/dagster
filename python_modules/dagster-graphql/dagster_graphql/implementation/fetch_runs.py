@@ -61,7 +61,8 @@ def get_validated_config(
             GrapheneRunConfigValidationInvalid.for_validation_errors(
                 # `PipelineDefinition.get_external_pipeline` does not exist, but this code has been
                 # here forever. Type-ignore until we figure out the correct call.
-                pipeline_def.get_external_pipeline(), validated_config.errors  # type: ignore
+                pipeline_def.get_external_pipeline(),
+                validated_config.errors,  # type: ignore
             )
         )
 

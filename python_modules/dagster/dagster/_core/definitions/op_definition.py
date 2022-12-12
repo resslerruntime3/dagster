@@ -442,9 +442,7 @@ def _resolve_output_defs_from_outs(
     from .decorators.solid_decorator import DecoratedOpFunction
 
     if isinstance(compute_fn, DecoratedOpFunction):
-        inferred_output_props = infer_output_props(
-            compute_fn.decorated_fn
-        )
+        inferred_output_props = infer_output_props(compute_fn.decorated_fn)
         annotation = inferred_output_props.annotation
         description = inferred_output_props.description
     else:

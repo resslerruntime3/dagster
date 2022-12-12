@@ -5,7 +5,9 @@ import dask.dataframe as dd
 from dagster import Any, Bool, Field, Float, Int, Permissive, Shape, String
 
 
-def normalize_column_names(df: dd.DataFrame, enabled) -> dd.DataFrame:  # pyright: ignore [reportPrivateImportUsage]
+def normalize_column_names(
+    df: dd.DataFrame, enabled
+) -> dd.DataFrame:  # pyright: ignore [reportPrivateImportUsage]
     if enabled:
         df.columns = normalize_names(df.columns)
 
@@ -24,6 +26,7 @@ def normalize_names(names):
         return camel_to_snake2.sub(r"\1_\2", name).lower()
 
     return map(normalize, names)
+
 
 # NOTE (2022-12-12): Attribute access to `dd` has been marked with `# pyright: ignore
 # [reportPrivateImportUsage]` because dask does not correctly mark the symbols we are accessing as

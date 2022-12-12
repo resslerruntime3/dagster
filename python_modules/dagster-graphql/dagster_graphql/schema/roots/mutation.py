@@ -1,4 +1,5 @@
 from typing import Any
+
 import graphene
 from dagster_graphql.implementation.execution.backfill import (
     cancel_partition_backfill,
@@ -339,7 +340,12 @@ class GrapheneLaunchRunReexecutionMutation(graphene.Mutation):
 
     @capture_error
     @check_permission(Permissions.LAUNCH_PIPELINE_REEXECUTION)
-    def mutate(self, graphene_info: ResolveInfo, execution_params: Any = None, reexecution_params: Any = None):
+    def mutate(
+        self,
+        graphene_info: ResolveInfo,
+        execution_params: Any = None,
+        reexecution_params: Any = None,
+    ):
         check.invariant(
             bool(execution_params) != bool(reexecution_params),
             "Must only provide one of either executionParams or reexecutionParams",
@@ -459,7 +465,9 @@ class GrapheneReloadRepositoryLocationMutation(graphene.Mutation):
         # our current WorkspaceRequestContext outdated. Therefore, `reload_repository_location` returns
         # an updated WorkspaceRequestContext for us to use.
         new_context = graphene_info.context.reload_repository_location(location_name)
-        return GrapheneWorkspaceLocationEntry(check.not_none(new_context.get_location_entry(location_name)))
+        return GrapheneWorkspaceLocationEntry(
+            check.not_none(new_context.get_location_entry(location_name))
+        )
 
 
 class GrapheneShutdownRepositoryLocationMutation(graphene.Mutation):

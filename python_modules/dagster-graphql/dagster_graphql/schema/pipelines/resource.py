@@ -1,5 +1,5 @@
-from dagster_graphql.schema.util import ResolveInfo
 import graphene
+from dagster_graphql.schema.util import ResolveInfo
 
 import dagster._check as check
 from dagster._core.snap import ConfigSchemaSnapshot, ResourceDefSnap

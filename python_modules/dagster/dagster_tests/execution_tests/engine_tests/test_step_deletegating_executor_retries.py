@@ -51,11 +51,7 @@ class TestStepHandler(StepHandler):
         assert step_handler_context.execute_step_args.step_keys_to_execute == ["retry_op"]
 
         known_state = check.not_none(step_handler_context.execute_step_args.known_state)
-        attempt_count = (
-            known_state.get_retry_state().get_attempt_count(
-                "retry_op"
-            )
-        )
+        attempt_count = known_state.get_retry_state().get_attempt_count("retry_op")
         if attempt_count == 0:
             assert TestStepHandler.launched_first_attempt is True
             assert TestStepHandler.launched_second_attempt is False

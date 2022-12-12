@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Mapping, Optional, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar, Union
 
 from typing_extensions import Self
 

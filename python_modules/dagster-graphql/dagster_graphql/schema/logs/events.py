@@ -1,6 +1,7 @@
 from typing import Optional, Union
-from dagster_graphql.schema.pipelines.pipeline import GrapheneRun
+
 import graphene
+from dagster_graphql.schema.pipelines.pipeline import GrapheneRun
 
 import dagster._check as check
 from dagster._core.definitions.events import AssetLineageInfo
@@ -325,7 +326,9 @@ class AssetEventMixin:
 
         return GrapheneAssetKey(path=asset_key.path)
 
-    def resolve_runOrError(self, graphene_info: ResolveInfo) -> Union[GrapheneRun, GrapheneRunNotFoundError]:
+    def resolve_runOrError(
+        self, graphene_info: ResolveInfo
+    ) -> Union[GrapheneRun, GrapheneRunNotFoundError]:
         return get_run_by_id(graphene_info, self._event.run_id)
 
     def resolve_stepStats(self, graphene_info: ResolveInfo) -> "GrapheneRunStepStats":

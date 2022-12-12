@@ -570,7 +570,9 @@ class GrapheneAssetNode(graphene.ObjectType):
         return self._external_asset_node.is_observable
 
     def resolve_latestMaterializationByPartition(
-        self, graphene_info, partitions: Optional[Sequence[str]] = None,
+        self,
+        graphene_info,
+        partitions: Optional[Sequence[str]] = None,
     ) -> Sequence[Optional[GrapheneMaterializationEvent]]:
         get_partition = (
             lambda event: event.dagster_event.step_materialization_data.materialization.partition

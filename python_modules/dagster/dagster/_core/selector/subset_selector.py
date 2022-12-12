@@ -182,7 +182,9 @@ class Traverser(Generic[T_Hashable]):
         self.graph = graph
 
     # `depth=None` is infinite depth
-    def _fetch_items(self, item_name: T_Hashable, depth: int, direction: Direction) -> AbstractSet[T_Hashable]:
+    def _fetch_items(
+        self, item_name: T_Hashable, depth: int, direction: Direction
+    ) -> AbstractSet[T_Hashable]:
         dep_graph = self.graph[direction]
         stack = deque([item_name])
         result: Set[T_Hashable] = set()
@@ -227,7 +229,9 @@ def fetch_connected(
         return Traverser(graph).fetch_upstream(item, depth)
 
 
-def fetch_sinks(graph: DependencyGraph, within_selection: AbstractSet[T_Hashable]) -> AbstractSet[T_Hashable]:
+def fetch_sinks(
+    graph: DependencyGraph, within_selection: AbstractSet[T_Hashable]
+) -> AbstractSet[T_Hashable]:
     """
     A sink is an asset that has no downstream dependencies within the provided selection.
     It can have other dependencies outside of the selection.
@@ -240,7 +244,9 @@ def fetch_sinks(graph: DependencyGraph, within_selection: AbstractSet[T_Hashable
     return sinks
 
 
-def fetch_sources(graph: DependencyGraph, within_selection: AbstractSet[T_Hashable]) -> AbstractSet[T_Hashable]:
+def fetch_sources(
+    graph: DependencyGraph, within_selection: AbstractSet[T_Hashable]
+) -> AbstractSet[T_Hashable]:
     """
     A source is a node that has no upstream dependencies within the provided selection.
     It can have other dependencies outside of the selection.

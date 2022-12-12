@@ -1,12 +1,10 @@
 # isort: skip_file
 # pylint: disable=reimported
-from typing import Union
 from dagster import (
     AssetKey,
     load_assets_from_current_module,
     AssetsDefinition,
     with_resources,
-    GraphDefinition,
     GraphOut,
     Out,
     Output,
@@ -70,6 +68,7 @@ store_slack_files = define_asset_job(
 @op
 def add_one(input_num):
     return input_num + 1
+
 
 # start_basic_dependencies
 from dagster import AssetsDefinition, asset, graph

@@ -9,7 +9,7 @@ from dagster._core.storage.captured_log_manager import CapturedLogManager
 from dagster._daemon.types import DaemonStatus
 
 from .errors import GraphenePythonError
-from .util import non_null_list, ResolveInfo
+from .util import ResolveInfo, non_null_list
 
 
 class GrapheneRunLauncher(graphene.ObjectType):

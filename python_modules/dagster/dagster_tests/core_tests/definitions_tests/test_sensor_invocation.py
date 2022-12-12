@@ -21,7 +21,6 @@ from dagster import (
     PartitionMapping,
     PartitionsDefinition,
     RunRequest,
-    SensorEvaluationContext,
     SkipReason,
     StaticPartitionsDefinition,
     asset,

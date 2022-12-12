@@ -3,8 +3,6 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, Mapping, Optional, Sequence, Union
 
-
-
 import dagster._check as check
 from dagster._config import validate_config_from_snap
 from dagster._core.execution.plan.state import KnownExecutionState

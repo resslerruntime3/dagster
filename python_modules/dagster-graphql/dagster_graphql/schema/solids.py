@@ -26,7 +26,6 @@ class _ArgNotPresentSentinel:
 
 
 class GrapheneInputDefinition(graphene.ObjectType):
-
     solid_definition = graphene.NonNull(lambda: GrapheneSolidDefinition)
     name = graphene.NonNull(graphene.String)
     description = graphene.String()
@@ -36,7 +35,9 @@ class GrapheneInputDefinition(graphene.ObjectType):
     class Meta:
         name = "InputDefinition"
 
-    def __init__(self, represented_pipeline: RepresentedPipeline, solid_def_name: str, input_def_name: str):
+    def __init__(
+        self, represented_pipeline: RepresentedPipeline, solid_def_name: str, input_def_name: str
+    ):
         self._represented_pipeline = check.inst_param(
             represented_pipeline, "represented_pipeline", RepresentedPipeline
         )
@@ -54,7 +55,9 @@ class GrapheneInputDefinition(graphene.ObjectType):
             self._represented_pipeline.pipeline_snapshot, self._input_def_snap.dagster_type_key
         )
 
-    def resolve_solid_definition(self, _graphene_info: ResolveInfo) -> Union["GrapheneSolidDefinition", "GrapheneCompositeSolidDefinition"]:
+    def resolve_solid_definition(
+        self, _graphene_info: ResolveInfo
+    ) -> Union["GrapheneSolidDefinition", "GrapheneCompositeSolidDefinition"]:
         return build_solid_definition(
             self._represented_pipeline, self._solid_def_snap.name  # pylint: disable=no-member
         )
@@ -74,7 +77,13 @@ class GrapheneOutputDefinition(graphene.ObjectType):
     class Meta:
         name = "OutputDefinition"
 
-    def __init__(self, represented_pipeline: RepresentedPipeline, solid_def_name: str, output_def_name: str, is_dynamic: bool):
+    def __init__(
+        self,
+        represented_pipeline: RepresentedPipeline,
+        solid_def_name: str,
+        output_def_name: str,
+        is_dynamic: bool,
+    ):
         self._represented_pipeline = check.inst_param(
             represented_pipeline, "represented_pipeline", RepresentedPipeline
         )
@@ -112,7 +121,13 @@ class GrapheneInput(graphene.ObjectType):
     class Meta:
         name = "Input"
 
-    def __init__(self, represented_pipeline: RepresentedPipeline, current_dep_structure: DependencyStructureIndex, solid_name: str, input_name: str):
+    def __init__(
+        self,
+        represented_pipeline: RepresentedPipeline,
+        current_dep_structure: DependencyStructureIndex,
+        solid_name: str,
+        input_name: str,
+    ):
         self._represented_pipeline = check.inst_param(
             represented_pipeline, "represented_pipeline", RepresentedPipeline
         )
@@ -455,9 +470,7 @@ class GrapheneSolidDefinition(graphene.ObjectType, ISolidDefinitionMixin):
     def resolve_required_resources(self, _graphene_info: ResolveInfo):
         solid_def_snap = self._solid_def_snap
         assert isinstance(solid_def_snap, SolidDefSnap)
-        return [
-            GrapheneResourceRequirement(key) for key in solid_def_snap.required_resource_keys
-        ]
+        return [GrapheneResourceRequirement(key) for key in solid_def_snap.required_resource_keys]
 
 
 class GrapheneSolidStepStatsUnavailableError(graphene.ObjectType):
@@ -490,7 +503,12 @@ class GrapheneSolid(graphene.ObjectType):
     class Meta:
         name = "Solid"
 
-    def __init__(self, represented_pipeline: RepresentedPipeline, solid_name: str, current_dep_structure: DependencyStructureIndex):
+    def __init__(
+        self,
+        represented_pipeline: RepresentedPipeline,
+        solid_name: str,
+        current_dep_structure: DependencyStructureIndex,
+    ):
         self._represented_pipeline = check.inst_param(
             represented_pipeline, "represented_pipeline", RepresentedPipeline
         )
@@ -508,7 +526,9 @@ class GrapheneSolid(graphene.ObjectType):
     def get_solid_definition_name(self) -> str:
         return self._solid_def_snap.name
 
-    def get_solid_definition(self) -> Union[GrapheneSolidDefinition, "GrapheneCompositeSolidDefinition"]:
+    def get_solid_definition(
+        self,
+    ) -> Union[GrapheneSolidDefinition, "GrapheneCompositeSolidDefinition"]:
         return build_solid_definition(self._represented_pipeline, self._solid_def_snap.name)
 
     def get_is_dynamic_mapped(self) -> bool:
@@ -520,7 +540,9 @@ class GrapheneSolid(graphene.ObjectType):
     def get_pipeline_name(self) -> str:
         return self._represented_pipeline.name
 
-    def resolve_definition(self, _graphene_info: ResolveInfo) -> Union[GrapheneSolidDefinition, "GrapheneCompositeSolidDefinition"]:
+    def resolve_definition(
+        self, _graphene_info: ResolveInfo
+    ) -> Union[GrapheneSolidDefinition, "GrapheneCompositeSolidDefinition"]:
         return self.get_solid_definition()
 
     def resolve_inputs(self, _graphene_info: ResolveInfo) -> Sequence[GrapheneInput]:
@@ -558,7 +580,12 @@ class GrapheneSolidHandle(graphene.ObjectType):
     class Meta:
         name = "SolidHandle"
 
-    def __init__(self, handle: NodeHandle, solid: GrapheneSolid, parent: Optional["GrapheneSolidHandle"]=None):
+    def __init__(
+        self,
+        handle: NodeHandle,
+        solid: GrapheneSolid,
+        parent: Optional["GrapheneSolidHandle"] = None,
+    ):
         super().__init__(
             handleID=check.inst_param(handle, "handle", NodeHandle),
             solid=check.inst_param(solid, "solid", GrapheneSolid),

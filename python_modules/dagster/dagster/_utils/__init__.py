@@ -668,10 +668,12 @@ def traced(func: T_Callable) -> T_Callable:
 
     return cast(T_Callable, inner)
 
+
 def len_iter(iterable: Iterable[object]) -> int:
     if isinstance(iterable, Sized):
         return len(iterable)
     return sum(1 for _ in iterable)
+
 
 def iter_to_list(iterable: Iterable[T]) -> List[T]:
     if isinstance(iterable, List):

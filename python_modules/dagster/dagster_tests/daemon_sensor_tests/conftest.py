@@ -26,7 +26,7 @@ def instance_fixture(instance_module_scoped):
     yield instance_module_scoped
 
 
-def create_workspace_load_target(attribute: Optional[str] ="the_repo"):
+def create_workspace_load_target(attribute: Optional[str] = "the_repo"):
     return ModuleTarget(
         module_name="dagster_tests.daemon_sensor_tests.test_sensor_run",
         attribute=attribute,

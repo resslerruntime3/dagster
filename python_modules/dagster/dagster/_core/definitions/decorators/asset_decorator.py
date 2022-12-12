@@ -1,4 +1,5 @@
 import warnings
+from inspect import Parameter
 from typing import (
     AbstractSet,
     Any,
@@ -21,7 +22,6 @@ from dagster._core.definitions.freshness_policy import FreshnessPolicy
 from dagster._core.errors import DagsterInvalidDefinitionError
 from dagster._core.storage.io_manager import IOManagerDefinition
 from dagster._core.types.dagster_type import DagsterType
-from inspect import Parameter
 from dagster._utils.backcompat import (
     ExperimentalWarning,
     deprecation_warning,
@@ -515,9 +515,7 @@ def build_asset_ins(
     )
     input_params = params[1:] if is_context_provided else params
     non_var_input_param_names = [
-        param.name
-        for param in input_params
-        if param.kind == Parameter.POSITIONAL_OR_KEYWORD
+        param.name for param in input_params if param.kind == Parameter.POSITIONAL_OR_KEYWORD
     ]
     has_kwargs = any(param.kind == Parameter.VAR_KEYWORD for param in input_params)
 

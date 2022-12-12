@@ -2,8 +2,8 @@ import logging
 from collections import defaultdict
 from contextlib import contextmanager
 from typing import Callable, cast
-from sqlalchemy.engine import Engine
 
+from sqlalchemy.engine import Engine
 from sqlalchemy.pool import NullPool
 
 from dagster._core.storage.event_log.base import EventLogCursor

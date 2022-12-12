@@ -275,7 +275,9 @@ def test_missing_one_parameter():
         @serdes_test_class
         class MissingFieldInNew(namedtuple("MissingFieldInNew", "field_one field_two field_three")):
             def __new__(cls, field_one, field_two):
-                return super(MissingFieldInNew, cls).__new__(field_one, field_two, None)  # pyright: ignore
+                return super(MissingFieldInNew, cls).__new__(
+                    field_one, field_two, None
+                )  # pyright: ignore
 
     assert (
         str(exc_info.value)

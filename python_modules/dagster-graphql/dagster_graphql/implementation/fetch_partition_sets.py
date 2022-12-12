@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Optional, Union
-from dagster._core.host_representation.external_data import ExternalPartitionNamesData
 
 from dagster_graphql.schema.util import ResolveInfo
 
@@ -9,6 +8,7 @@ from dagster._core.host_representation import (
     RepositoryHandle,
     RepositorySelector,
 )
+from dagster._core.host_representation.external_data import ExternalPartitionNamesData
 from dagster._core.storage.pipeline_run import RunsFilter
 from dagster._core.storage.tags import (
     PARTITION_NAME_TAG,

@@ -1,9 +1,9 @@
 from typing import Any, Dict, Optional, Union
-from typing_extensions import TypeAlias
 
 import graphene
 from dagster_graphql.implementation.events import iterate_metadata_entries
 from dagster_graphql.schema.metadata import GrapheneMetadataEntry
+from typing_extensions import TypeAlias
 
 import dagster._check as check
 from dagster._core.snap import PipelineSnapshot
@@ -18,7 +18,10 @@ from .errors import (
 )
 from .util import non_null_list
 
-GrapheneDagsterTypeUnion: TypeAlias = Union["GrapheneListDagsterType", "GrapheneNullableDagsterType", "GrapheneRegularDagsterType"]
+GrapheneDagsterTypeUnion: TypeAlias = Union[
+    "GrapheneListDagsterType", "GrapheneNullableDagsterType", "GrapheneRegularDagsterType"
+]
+
 
 def config_type_for_schema(
     pipeline_snapshot: PipelineSnapshot, schema_key: Optional[str]

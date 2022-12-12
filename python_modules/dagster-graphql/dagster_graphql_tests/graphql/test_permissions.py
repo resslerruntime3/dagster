@@ -1,5 +1,4 @@
 from unittest.mock import Mock
-from dagster_graphql.schema.util import ResolveInfo
 
 import pytest
 from dagster_graphql.implementation.utils import (
@@ -7,6 +6,7 @@ from dagster_graphql.implementation.utils import (
     assert_permission,
     check_permission,
 )
+from dagster_graphql.schema.util import ResolveInfo
 from dagster_graphql.test.utils import execute_dagster_graphql
 
 import dagster._check as check

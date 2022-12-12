@@ -2,7 +2,6 @@ from typing import Optional, Sequence, Tuple, cast
 
 from dagster_graphql.schema.util import ResolveInfo
 
-
 import dagster._check as check
 from dagster._core.errors import DagsterRunNotFoundError
 from dagster._core.execution.plan.resume_retry import get_retry_steps_from_parent_run

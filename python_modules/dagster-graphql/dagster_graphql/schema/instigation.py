@@ -1,6 +1,6 @@
 import sys
-from typing import TYPE_CHECKING, Optional, Sequence
 import warnings
+from typing import TYPE_CHECKING, Optional, Sequence
 
 import graphene
 import pendulum
@@ -33,7 +33,8 @@ from .tags import GraphenePipelineTag
 from .util import InputObject, ResolveInfo, non_null_list
 
 if TYPE_CHECKING:
-    from dagster_graphql.schema.pipelines.pipeline import GrapheneRun
+    pass
+
 
 class GrapheneInstigationType(graphene.Enum):
     SCHEDULE = "SCHEDULE"
@@ -365,7 +366,9 @@ class GrapheneInstigationState(graphene.ObjectType):
 
         return None
 
-    def resolve_runs(self, graphene_info: ResolveInfo, runs: Sequence[InputObject], limit: Optional[int] = None):
+    def resolve_runs(
+        self, graphene_info: ResolveInfo, runs: Sequence[InputObject], limit: Optional[int] = None
+    ):
         from .pipelines.pipeline import GrapheneRun
 
         if limit and self._batch_loader:

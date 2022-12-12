@@ -1,6 +1,6 @@
 import datetime
 from contextlib import contextmanager
-from typing import Any, Iterator, Optional, Union, cast
+from typing import Iterator, Optional, Union, cast
 
 import packaging.version
 import pendulum
@@ -137,6 +137,7 @@ def to_timezone(dt: datetime.datetime, tz: str) -> PendulumDateTime:
 def timezone(tz: str) -> PendulumTimeZone:
     return cast(PendulumTimeZone, pendulum.tz.timezone(tz))
 
+
 @contextmanager
 def test(dt: PendulumDateTime) -> Iterator[None]:
     # Everything type-ignored here because one of these branches will fail type-checking depending
@@ -147,6 +148,7 @@ def test(dt: PendulumDateTime) -> Iterator[None]:
         from pendulum import test as ptest  # pyright: ignore
     with ptest(dt):  # pyright: ignore
         yield
+
 
 @contextmanager
 def mock_pendulum_timezone(override_timezone: str) -> Iterator[None]:

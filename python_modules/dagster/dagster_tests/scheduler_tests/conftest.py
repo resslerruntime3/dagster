@@ -26,7 +26,7 @@ def instance_fixture(instance_session_scoped):
     yield instance_session_scoped
 
 
-def workspace_load_target(attribute: Optional[str]="the_repo") -> ModuleTarget:
+def workspace_load_target(attribute: Optional[str] = "the_repo") -> ModuleTarget:
     return ModuleTarget(
         module_name="dagster_tests.scheduler_tests.test_scheduler_run",
         attribute=attribute,

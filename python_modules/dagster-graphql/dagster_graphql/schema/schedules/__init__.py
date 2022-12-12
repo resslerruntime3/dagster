@@ -1,5 +1,5 @@
-from dagster_graphql.schema.util import ResolveInfo
 import graphene
+from dagster_graphql.schema.util import ResolveInfo
 
 from dagster._core.host_representation import ScheduleSelector
 from dagster._core.workspace.permissions import Permissions

@@ -1,9 +1,7 @@
-from typing import cast
+from typing import Any, cast
 
 import graphene
 from typing_extensions import TypeAlias
-from typing import Any, cast
-
 
 from dagster._core.storage.captured_log_manager import CapturedLogManager
 from dagster._core.workspace.context import WorkspaceRequestContext

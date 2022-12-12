@@ -411,7 +411,11 @@ class DagsterGrpcClient:
 
         return res.serialized_cancel_execution_result
 
-    def can_cancel_execution(self, can_cancel_execution_request: CanCancelExecutionRequest, timeout: int=DEFAULT_GRPC_TIMEOUT):
+    def can_cancel_execution(
+        self,
+        can_cancel_execution_request: CanCancelExecutionRequest,
+        timeout: int = DEFAULT_GRPC_TIMEOUT,
+    ):
         check.inst_param(
             can_cancel_execution_request,
             "can_cancel_execution_request",

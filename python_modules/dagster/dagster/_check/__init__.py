@@ -169,6 +169,7 @@ def is_callable(obj: object, additional_message: Optional[str] = None) -> Callab
 
 T_Type = TypeVar("T_Type", bound=type)
 
+
 def class_param(
     obj: T_Type,
     param_name: str,

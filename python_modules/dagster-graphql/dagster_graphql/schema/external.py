@@ -21,13 +21,8 @@ from dagster._core.host_representation.grpc_server_state_subscriber import (
     LocationStateChangeEvent,
     LocationStateSubscriber,
 )
-from dagster._core.workspace.workspace import (
-    WorkspaceLocationEntry,
-    WorkspaceLocationLoadStatus,
-)
-from dagster._core.workspace.context import (
-    WorkspaceProcessContext,
-)
+from dagster._core.workspace.context import WorkspaceProcessContext
+from dagster._core.workspace.workspace import WorkspaceLocationEntry, WorkspaceLocationLoadStatus
 
 from .asset_graph import GrapheneAssetGroup, GrapheneAssetNode
 from .errors import GraphenePythonError, GrapheneRepositoryNotFoundError

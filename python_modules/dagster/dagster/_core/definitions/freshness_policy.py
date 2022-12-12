@@ -191,7 +191,7 @@ class FreshnessPolicy(
             evaluation_tick = next(schedule_ticks)
         elif evaluation_time is not None:
             evaluation_tick = evaluation_time
-        else: 
+        else:
             check.failed("Must provide an evaluation time if not using a cron schedule")
 
         minutes_late = 0.0

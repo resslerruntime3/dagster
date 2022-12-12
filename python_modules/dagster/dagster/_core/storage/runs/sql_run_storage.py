@@ -9,8 +9,8 @@ from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, 
 
 import pendulum
 import sqlalchemy as db
-from sqlalchemy.engine import Connection, Row
 import sqlalchemy.exc as db_exc
+from sqlalchemy.engine import Connection, Row
 
 import dagster._check as check
 from dagster._core.errors import (

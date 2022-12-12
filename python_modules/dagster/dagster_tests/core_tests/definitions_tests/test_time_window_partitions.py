@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import cast
 
-import dagster._seven.compat.pendulum as pendulum
 import pytest
 
+import dagster._seven.compat.pendulum as pendulum
 from dagster import (
     DailyPartitionsDefinition,
     HourlyPartitionsDefinition,

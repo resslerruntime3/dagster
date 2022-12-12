@@ -3,6 +3,9 @@ from inspect import Parameter
 from typing import Any, Dict, List, Mapping, NamedTuple, Optional, Sequence, Type, Union
 
 import dagster._check as check
+
+# re-export
+from dagster._core.definitions.run_request import InstigatorType as InstigatorType
 from dagster._core.host_representation.origin import ExternalInstigatorOrigin
 from dagster._core.host_representation.selector import InstigatorSelector, RepositorySelector
 from dagster._serdes import create_snapshot_id
@@ -18,9 +21,6 @@ from dagster._serdes.serdes import (
 from dagster._utils.error import SerializableErrorInfo
 from dagster._utils.merger import merge_dicts
 
-
-# re-export
-from dagster._core.definitions.run_request import InstigatorType as InstigatorType
 
 @whitelist_for_serdes
 class InstigatorStatus(Enum):
