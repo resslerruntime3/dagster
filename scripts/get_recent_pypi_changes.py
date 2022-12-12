@@ -29,7 +29,7 @@ for library in libraries:
 
     if library:
         res_json = requests.get(
-            urllib.parse.urlunparse(
+            urllib.parse.urlunparse(  # pyright: ignore
                 (
                     "https",
                     "pypi.org",

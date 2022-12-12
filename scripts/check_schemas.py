@@ -3,6 +3,7 @@ import importlib
 import pkgutil
 
 import sqlalchemy as db
+from sqlalchemy.sql import elements as db_sql_elements
 from sqlalchemy.sql.schema import Column
 
 import dagster
@@ -49,7 +50,7 @@ def validate_column(column: Column):
         )
     elif (
         column.server_default
-        and isinstance(column.server_default.arg, db.sql.elements.TextClause)
+        and isinstance(column.server_default.arg, db_sql_elements.TextClause)
         and str(column.server_default.arg) == "CURRENT_TIMESTAMP"
     ):
         raise Exception(
