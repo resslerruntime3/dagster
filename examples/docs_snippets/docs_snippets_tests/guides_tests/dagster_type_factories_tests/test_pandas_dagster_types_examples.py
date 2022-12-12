@@ -17,7 +17,8 @@ from docs_snippets.guides.dagster.dagster_type_factories.simple_example import (
 from dagster import check_dagster_type
 from dagster._core.errors import DagsterTypeCheckDidNotPass
 
-EBIKE_TRIPS_PATH = os.path.join(example_root.__path__[0], "ebike_trips.csv")
+example_root_path = next(iter(example_root.__path__))
+EBIKE_TRIPS_PATH = os.path.join(example_root_path, "ebike_trips.csv")
 
 
 def test_simple_example_one_off():
