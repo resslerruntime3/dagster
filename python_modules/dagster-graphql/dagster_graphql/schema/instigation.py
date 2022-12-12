@@ -30,8 +30,10 @@ from .errors import GrapheneError, GraphenePythonError
 from .logs.log_level import GrapheneLogLevel
 from .repository_origin import GrapheneRepositoryOrigin
 from .tags import GraphenePipelineTag
-from .util import ResolveInfo, non_null_list
+from .util import InputObject, ResolveInfo, non_null_list
 
+if TYPE_CHECKING:
+    from dagster_graphql.schema.pipelines.pipeline import GrapheneRun
 
 class GrapheneInstigationType(graphene.Enum):
     SCHEDULE = "SCHEDULE"
@@ -363,11 +365,10 @@ class GrapheneInstigationState(graphene.ObjectType):
 
         return None
 
-    def resolve_runs(self, graphene_info: ResolveInfo, **kwargs):
+    def resolve_runs(self, graphene_info: ResolveInfo, runs: Sequence[InputObject], limit: Optional[int] = None):
         from .pipelines.pipeline import GrapheneRun
 
-        if kwargs.get("limit") and self._batch_loader:
-            limit = kwargs["limit"]
+        if limit and self._batch_loader:
             records = (
                 self._batch_loader.get_run_records_for_sensor(self._instigator_state.name, limit)
                 if self._instigator_state.instigator_type == InstigatorType.SENSOR
@@ -396,7 +397,7 @@ class GrapheneInstigationState(graphene.ObjectType):
             GrapheneRun(record)
             for record in graphene_info.context.instance.get_run_records(
                 filters=filters,
-                limit=kwargs.get("limit"),
+                limit=limit,
             )
         ]
 

@@ -1,4 +1,5 @@
-from typing import List, Optional, cast
+from typing import List, Optional
+
 import graphene
 from dagster_graphql.implementation.loader import RepositoryScopedBatchLoader
 
@@ -97,17 +98,18 @@ class GrapheneSchedule(graphene.ObjectType):
             external_partition_set=external_partition_set,
         )
 
-    def resolve_futureTicks(self, _graphene_info: ResolveInfo, **kwargs):
-        cursor = cast(float, kwargs.get(
-            "cursor", get_timestamp_from_utc_datetime(get_current_datetime_in_utc())
-        ))
-        limit = cast(Optional[int], kwargs.get("limit"))
-        raw_until = cast(Optional[float], kwargs.get("until"))
-        until = float(raw_until) if raw_until is not None else None
+    def resolve_futureTicks(
+        self,
+        _graphene_info: ResolveInfo,
+        cursor: Optional[float] = None,
+        limit: Optional[int] = None,
+        until: Optional[float] = None,
+    ):
+        cursor = cursor or get_timestamp_from_utc_datetime(get_current_datetime_in_utc())
+        until = float(until) if until else None
 
         tick_times: List[float] = []
         time_iter = self._external_schedule.execution_time_iterator(cursor)
-
 
         if until is not None:
             currentTime = None
