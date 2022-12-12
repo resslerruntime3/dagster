@@ -127,7 +127,7 @@ def make_dagster_repo_from_airflow_dag_bag(
     use_airflow_template_context=False,
     mock_xcom=False,
     use_ephemeral_airflow_db=False,
-    connections=[],
+    connections=None,
 ):
     """Construct a Dagster repository corresponding to Airflow DAGs in DagBag.
 
@@ -156,6 +156,8 @@ def make_dagster_repo_from_airflow_dag_bag(
             depend on xcom may not work as expected. (default: False)
         use_ephemeral_airflow_db (bool): If True, dagster will create an ephemeral sqlite airflow
             database for each run. (default: False)
+        connections (List[Connection]): List of Airflow Connections to be created in the Ephemeral
+            Airflow DB, if use_emphemeral_airflow_db is False this will be ignored.
 
     Returns:
         RepositoryDefinition
@@ -324,7 +326,7 @@ def make_dagster_repo_from_airflow_dags_path(
     use_airflow_template_context=False,
     mock_xcom=False,
     use_ephemeral_airflow_db=True,
-    connections=[],
+    connections=None,
 ):
     """Construct a Dagster repository corresponding to Airflow DAGs in dag_path.
 
@@ -361,7 +363,8 @@ def make_dagster_repo_from_airflow_dags_path(
             depend on xcom may not work as expected. (default: False)
         use_ephemeral_airflow_db (bool): If True, dagster will create an ephemeral sqlite airflow
             database for each run. (default: False)
-        connections (List[Connection]): List of Airflow connections to add to the Airflow DB.
+        connections (List[Connection]): List of Airflow Connections to be created in the Ephemeral
+            Airflow DB, if use_emphemeral_airflow_db is False this will be ignored.
 
     Returns:
         RepositoryDefinition
@@ -404,7 +407,7 @@ def make_dagster_pipeline_from_airflow_dag(
     unique_id=None,
     mock_xcom=False,
     use_ephemeral_airflow_db=False,
-    connections=[],
+    connections=None,
 ):
     """Construct a Dagster pipeline corresponding to a given Airflow DAG.
 
@@ -459,6 +462,8 @@ def make_dagster_pipeline_from_airflow_dag(
             depend on xcom may not work as expected.
         use_ephemeral_airflow_db (bool): If True, dagster will create an ephemeral sqlite airflow
             database for each run
+        connections (List[Connection]): List of Airflow Connections to be created in the Ephemeral
+            Airflow DB, if use_emphemeral_airflow_db is False this will be ignored.
 
     Returns:
         pipeline_def (PipelineDefinition): The generated Dagster pipeline
