@@ -1,4 +1,5 @@
-from datadog import DogStatsd, initialize, statsd
+from datadog import initialize
+from datadog.dogstatsd.base import DogStatsd, statsd
 
 from dagster import Field, StringSource, resource
 
