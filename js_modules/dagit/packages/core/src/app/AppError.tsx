@@ -1,5 +1,5 @@
+import {ServerError} from '@apollo/client';
 import {ErrorResponse, onError} from '@apollo/client/link/error';
-import {ServerError} from '@apollo/client/link/utils';
 import {Observable} from '@apollo/client/utilities';
 import {FontFamily, Toaster} from '@dagster-io/ui';
 import {GraphQLError} from 'graphql';
@@ -25,6 +25,21 @@ const showGraphQLError = (error: DagsterGraphQLError, operationName?: string) =>
   console.error('[GraphQL error]', error);
 };
 
+const CODES_TO_SURFACE = new Set([504, 408]);
+
+const showNetworkError = (statusCode: number) => {
+  if (CODES_TO_SURFACE.has(statusCode)) {
+    let message = 'A network error occurred. See console for details.';
+    switch (statusCode) {
+      case 408:
+      case 504:
+        message = 'Request timed out. See console for details.';
+        break;
+    }
+    ErrorToaster.show({message, intent: 'warning'});
+  }
+};
+
 export const errorLink = onError((response: ErrorResponse) => {
   if (response.graphQLErrors) {
     const {graphQLErrors, operation} = response;
@@ -40,7 +55,10 @@ export const errorLink = onError((response: ErrorResponse) => {
       // to flow the error payload to the product
       return Observable.from([serverError.result]);
     }
-    // otherwise just log it
+
+    if (response.networkError && 'statusCode' in response.networkError) {
+      showNetworkError(response.networkError.statusCode);
+    }
     console.error('[Network error]', response.networkError);
   }
   return;

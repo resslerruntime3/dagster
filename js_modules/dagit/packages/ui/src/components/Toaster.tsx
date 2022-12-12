@@ -9,7 +9,7 @@ import {IconName, Icon} from './Icon';
 export const GlobalToasterStyle = createGlobalStyle`
   .dagster-toaster {
     .bp3-toast {
-      padding: 6px;
+      padding: 8px 12px;
       border-radius: 8px;
       font-size: 14px;
       line-height: 22px;
@@ -32,7 +32,10 @@ export const GlobalToasterStyle = createGlobalStyle`
       background-color: ${Colors.Blue500};
     }
 
-    .bp3-toast.bp3-intent-warning,
+    .bp3-toast.bp3-intent-warning {
+      background-color: ${Colors.Gray500};
+    }
+
     .bp3-toast.bp3-intent-danger {
       background-color: ${Colors.Red500};
     }
