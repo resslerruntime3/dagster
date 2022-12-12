@@ -1,6 +1,7 @@
 from typing import Optional
 
 import sqlalchemy as db
+import sqlalchemy.dialects as db_dialects
 
 import dagster._check as check
 from dagster._core.errors import DagsterInvariantViolationError
@@ -222,7 +223,7 @@ class PostgresEventLogStorage(SqlEventLogStorage, ConfigurableClass):
 
         values = self._get_asset_entry_values(event, self.has_secondary_index(ASSET_KEY_INDEX_COLS))
         with self.index_connection() as conn:
-            query = db.dialects.postgresql.insert(AssetKeyTable).values(
+            query = db_dialects.postgresql.insert(AssetKeyTable).values(
                 asset_key=event.dagster_event.asset_key.to_string(),
                 **values,
             )
