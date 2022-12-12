@@ -1,5 +1,7 @@
+from typing import cast
+
 import graphene
-from typing_extensions import Protocol, TypeAlias
+from typing_extensions import TypeAlias
 from typing import Any, cast
 
 
@@ -12,14 +14,11 @@ from dagster._core.workspace.context import WorkspaceRequestContext
 InputObject: TypeAlias = Any
 
 
-# Assign this type to `graphene_info` in a resolver to apply typing to `graphene_info.context`.
-class HasContext(Protocol):
+class ResolveInfo(graphene.ResolveInfo):
     @property
     def context(self) -> WorkspaceRequestContext:
-        ...
+        return cast(WorkspaceRequestContext, super().context)
 
-class ResolveInfo(HasContext, graphene.ResolveInfo):
-    pass
 
 def non_null_list(of_type):
     return graphene.NonNull(graphene.List(graphene.NonNull(of_type)))
