@@ -48,7 +48,9 @@ def _convert_string_to_timestamp(s: pd.Series) -> pd.Series:
     """
     if isinstance(s[0], str):
         try:
-            return pd.to_datetime(s.values)
+            # Ignoring because it's not clear if pandas type annotations are correct and this code
+            # works.
+            return pd.to_datetime(s.values)  # pyright: ignore
         except ValueError:
             return s
     else:
