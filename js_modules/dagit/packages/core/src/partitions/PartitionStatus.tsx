@@ -4,7 +4,7 @@ import * as React from 'react';
 import {useViewport} from '../gantt/useViewport';
 import {RunStatus} from '../types/globalTypes';
 
-import {assembleIntoSpans} from './PartitionRangeInput';
+import {assembleIntoSpans} from './SpanRepresentation';
 
 type SelectionRange = {
   start: string;
