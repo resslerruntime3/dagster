@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any, NamedTuple, Optional, OrderedDict, Sequence, Tuple, Union
 
 import click
+from typing_extensions import TypeAlias
 
 import dagster._check as check
 
@@ -241,7 +242,7 @@ class ManagedElementDiff(
 # Union type representing the status of a managed element - can either
 # return the (potentially empty) diff between the configured and deployed
 # stack, or an error.
-ManagedElementCheckResult = Union[ManagedElementDiff, ManagedElementError]
+ManagedElementCheckResult: TypeAlias = Union[ManagedElementDiff, ManagedElementError]
 
 
 class ManagedElementReconciler(ABC):
