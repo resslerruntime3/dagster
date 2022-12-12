@@ -8,7 +8,8 @@ from dagster_mysql import MySQLEventLogStorage, MySQLRunStorage, MySQLScheduleSt
 from dagster_mysql.utils import get_conn
 from sqlalchemy.pool import NullPool
 
-from dagster._core.instance import DagsterInstance, InstanceRef
+from dagster._core.instance import DagsterInstance
+from dagster._core.instance.ref import InstanceRef
 from dagster._core.storage.sql import create_engine, get_alembic_config, stamp_alembic_rev
 from dagster._core.test_utils import instance_for_test
 from dagster._utils import file_relative_path
