@@ -1,4 +1,5 @@
 import pyspark
+import pyspark.sql
 from dagster_duckdb.io_manager import DuckDbClient, _connect_duckdb, build_duckdb_io_manager
 from pyspark.sql import SparkSession
 
