@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import cast
 
-import pendulum
-
+import dagster._seven.compat.pendulum as pendulum
 from dagster import build_schedule_context, graph, op, repository
 from dagster._core.definitions.partitioned_schedule import build_schedule_from_partitioned_job
 from dagster._core.definitions.time_window_partitions import (

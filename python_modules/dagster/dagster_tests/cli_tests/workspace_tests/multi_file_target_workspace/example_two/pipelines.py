@@ -1,5 +1,5 @@
-# mypy: disable-error-code=attr-defined
-from solids import example_two_solid  # pylint: disable=no-name-in-module
+# type: ignore
+from solids import example_two_solid
 
 from dagster._legacy import pipeline
 

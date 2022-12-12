@@ -66,8 +66,9 @@ def test_descent_path():
     class Fizz(NamedTuple):
         buzz: int
 
+    # Arg is not actually a namedtuple but the function still works on it
     ser = _serialize_dagster_namedtuple(
-        {"a": {"b": [{}, {}, {"c": Fizz(1)}]}}, whitelist_map=test_map
+        {"a": {"b": [{}, {}, {"c": Fizz(1)}]}}, whitelist_map=test_map  # pyright: ignore
     )
 
     with pytest.raises(DeserializationError, match=re.escape("Descent path: <root:dict>.a.b[2].c")):
@@ -78,9 +79,9 @@ def test_forward_compat_serdes_new_field_with_default():
     test_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=test_map)
-    class Quux(namedtuple("_Quux", "foo bar")):
+    class Quux(namedtuple("_Quux", "foo bar")):  # pyright: ignore [reportGeneralTypeIssues]
         def __new__(cls, foo, bar):
-            return super(Quux, cls).__new__(cls, foo, bar)  # pylint: disable=bad-super-call
+            return super(Quux, cls).__new__(cls, foo, bar)  # pyright: ignore
 
     assert test_map.has_tuple_entry("Quux")
     klass, _, _ = test_map.get_tuple_entry("Quux")
@@ -90,14 +91,12 @@ def test_forward_compat_serdes_new_field_with_default():
 
     serialized = _serialize_dagster_namedtuple(quux, whitelist_map=test_map)
 
-    # pylint: disable=function-redefined
-    @_whitelist_for_serdes(whitelist_map=test_map)
-    class Quux(namedtuple("_Quux", "foo bar baz")):  # pylint: disable=bad-super-call
+    @_whitelist_for_serdes(whitelist_map=test_map)  # pyright: ignore [reportGeneralTypeIssues]
+    class Quux(namedtuple("_Quux", "foo bar baz")):
         def __new__(cls, foo, bar, baz=None):
             return super(Quux, cls).__new__(cls, foo, bar, baz=baz)
 
     assert test_map.has_tuple_entry("Quux")
-
     klass, _, _ = test_map.get_tuple_entry("Quux")
     assert klass is Quux
 
@@ -113,7 +112,7 @@ def test_forward_compat_serdes_new_enum_field():
     test_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=test_map)
-    class Corge(Enum):
+    class Corge(Enum):  # pyright: ignore [reportGeneralTypeIssues]
         FOO = 1
         BAR = 2
 
@@ -141,7 +140,7 @@ def test_serdes_enum_backcompat():
     test_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=test_map)
-    class Corge(Enum):
+    class Corge(Enum):  # pyright: ignore
         FOO = 1
         BAR = 2
 
@@ -178,9 +177,9 @@ def test_backward_compat_serdes():
     test_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=test_map)
-    class Quux(namedtuple("_Quux", "foo bar baz")):
+    class Quux(namedtuple("_Quux", "foo bar baz")):  # pyright: ignore
         def __new__(cls, foo, bar, baz):
-            return super(Quux, cls).__new__(cls, foo, bar, baz)  # pylint: disable=bad-super-call
+            return super(Quux, cls).__new__(cls, foo, bar, baz)  # pyright: ignore
 
     quux = Quux("zip", "zow", "whoopie")
 
@@ -204,7 +203,7 @@ def test_forward_compat():
     old_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=old_map)
-    class Quux(namedtuple("_Quux", "bar baz")):
+    class Quux(namedtuple("_Quux", "bar baz")):  # pyright: ignore
         def __new__(cls, bar, baz):
             return super().__new__(cls, bar, baz)
 
@@ -244,8 +243,8 @@ def test_wrong_first_arg():
 
         @serdes_test_class
         class NotCls(namedtuple("NotCls", "field_one field_two")):
-            def __new__(not_cls, field_two, field_one):
-                return super(NotCls, not_cls).__new__(field_one, field_two)
+            def __new__(not_cls, field_two, field_one):  # pyright: ignore
+                return super(NotCls, not_cls).__new__(field_one, field_two)  # pyright: ignore
 
     assert (
         str(exc_info.value)
@@ -259,7 +258,7 @@ def test_incorrect_order():
         @serdes_test_class
         class WrongOrder(namedtuple("WrongOrder", "field_one field_two")):
             def __new__(cls, field_two, field_one):
-                return super(WrongOrder, cls).__new__(field_one, field_two)
+                return super(WrongOrder, cls).__new__(field_one, field_two)  # pyright: ignore
 
     assert (
         str(exc_info.value)
@@ -276,7 +275,7 @@ def test_missing_one_parameter():
         @serdes_test_class
         class MissingFieldInNew(namedtuple("MissingFieldInNew", "field_one field_two field_three")):
             def __new__(cls, field_one, field_two):
-                return super(MissingFieldInNew, cls).__new__(field_one, field_two, None)
+                return super(MissingFieldInNew, cls).__new__(field_one, field_two, None)  # pyright: ignore
 
     assert (
         str(exc_info.value)
@@ -409,7 +408,7 @@ def test_from_storage_dict():
     old_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=old_map)
-    class MyThing(NamedTuple):
+    class MyThing(NamedTuple):  # pyright: ignore
         orig_name: str
 
     serialized_old = _serialize_dagster_namedtuple(MyThing("old"), whitelist_map=old_map)
@@ -471,9 +470,9 @@ def test_skip_when_empty():
     test_map = WhitelistMap.create()
 
     @_whitelist_for_serdes(whitelist_map=test_map)
-    class SameSnapshotTuple(namedtuple("_Tuple", "foo")):
+    class SameSnapshotTuple(namedtuple("_Tuple", "foo")):  # pyright: ignore
         def __new__(cls, foo):
-            return super(SameSnapshotTuple, cls).__new__(cls, foo)  # pylint: disable=bad-super-call
+            return super(SameSnapshotTuple, cls).__new__(cls, foo)  # pyright: ignore
 
     old_tuple = SameSnapshotTuple(foo="A")
     old_serialized = _serialize_dagster_namedtuple(old_tuple, whitelist_map=test_map)
@@ -482,7 +481,7 @@ def test_skip_when_empty():
     # Without setting skip_when_empty, the ID changes
 
     @_whitelist_for_serdes(whitelist_map=test_map)
-    class SameSnapshotTuple(namedtuple("_Tuple", "foo bar")):
+    class SameSnapshotTuple(namedtuple("_Tuple", "foo bar")):  # pyright: ignore
         def __new__(cls, foo, bar=None):
             return super(SameSnapshotTuple, cls).__new__(  # pylint: disable=bad-super-call
                 cls, foo, bar

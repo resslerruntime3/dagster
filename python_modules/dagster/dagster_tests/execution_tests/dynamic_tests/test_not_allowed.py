@@ -78,7 +78,7 @@ def test_multi_composite_out():
         @job
         def _should_fail():
             def _complex(item):
-                composed_echo().map(lambda y: add(y, item))
+                composed_echo().map(lambda y: add(y, item))  # pyright: ignore
 
             dynamic_solid().map(_complex)
 
@@ -170,7 +170,7 @@ def test_direct_dep():
         yield DynamicOutput(x + 2, mapping_key="2")
 
     @job
-    def _is_fine():
+    def _is_fine_1():
         def _add(item):
             dynamic_add(item)
 
@@ -189,7 +189,7 @@ def test_direct_dep():
             dynamic_solid().map(_add_echo)
 
     @job
-    def _is_fine():
+    def _is_fine_2():
         dynamic_solid().map(dynamic_add)
 
     with pytest.raises(

@@ -51,14 +51,15 @@ def instance_with_sensors(overrides=None, attribute="the_repo"):
         with create_test_daemon_workspace_context(
             create_workspace_load_target(attribute=attribute), instance=instance
         ) as workspace_context:
+
             yield (
                 instance,
                 workspace_context,
-                next(
+                check.not_none(next(
                     iter(
                         workspace_context.create_request_context().get_workspace_snapshot().values()
                     )
-                ).repository_location.get_repository(attribute),
+                ).repository_location).get_repository(attribute),
             )
 
 

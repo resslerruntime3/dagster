@@ -1,7 +1,7 @@
 # pylint: disable=unused-argument
-import pendulum
 import pytest
 
+import dagster._seven.compat.pendulum as pendulum
 from dagster import (
     AssetIn,
     DailyPartitionsDefinition,
@@ -182,6 +182,7 @@ def test_custom_unsupported_partition_mapping():
             assert downstream_partitions_def
             assert upstream_partitions_def
 
+            assert downstream_partition_key_range is not None
             start, end = downstream_partition_key_range
             return PartitionKeyRange(str(max(1, int(start) - 1)), end)
 

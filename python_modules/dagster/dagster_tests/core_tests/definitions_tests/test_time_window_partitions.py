@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import cast
 
-import pendulum
+import dagster._seven.compat.pendulum as pendulum
 import pytest
 
 from dagster import (

@@ -163,7 +163,7 @@ def test_reconstructable_module():
     original_sys_path = sys.path
     try:
         sys.path.insert(0, file_relative_path(__file__, "."))
-        from foo import bar_job  # pylint: disable=import-error
+        from foo import bar_job  # pyright: ignore
 
         reconstructable(bar_job)
 

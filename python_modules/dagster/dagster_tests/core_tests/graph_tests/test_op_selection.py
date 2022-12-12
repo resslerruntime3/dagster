@@ -683,7 +683,7 @@ def test_nested_op_selection_with_config_mapping():
 def test_op_selection_unsatisfied_input_failure():
     @op
     def basic() -> datetime:
-        return 5
+        return 5  # pyright: ignore (purposeful error)
 
     @op
     def ingest(x: datetime) -> str:
